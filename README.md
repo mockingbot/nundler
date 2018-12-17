@@ -3,10 +3,12 @@
 [![i:npm]][l:npm]
 [![i:size]][l:size]
 [![i:lint]][l:lint]
+[![i:npm-dev]][l:npm]
 
 Not bundler
 
 [i:npm]: https://img.shields.io/npm/v/nundler.svg?colorB=blue
+[i:npm-dev]: https://img.shields.io/npm/v/nundler.svg/dev.svg
 [l:npm]: https://npm.im/nundler
 [i:size]: https://packagephobia.now.sh/badge?p=nundler
 [l:size]: https://packagephobia.now.sh/result?p=nundler

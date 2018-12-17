@@ -10,11 +10,10 @@ const runMode = async (
   { getOptionOptional, getSingleOption, getSingleOptionOptional },
   log = console.log
 ) => {
-  log(`[${mode}] version: ${packageVersion}`)
-
   const fileAuth = getSingleOption('file-auth')
   const timeout = getSingleOptionOptional('timeout') || 0
 
+  log(`[${packageName}] mode: ${mode}, timeout: ${timeout}, version: ${packageVersion}`)
   switch (mode) {
     case 'list':
       return list({

@@ -50,6 +50,7 @@ const downloadPackageAuto = async ({
         log
       })
       await modify.move(tempFile, fileOutputPath)
+      log(`[downloadPackageAuto] get ${packageName}: ${fileOutputPath}`)
     }
   }
 }
