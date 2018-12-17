@@ -7,49 +7,44 @@ import { name as packageName, version as packageVersion } from '../package.json'
 
 const runMode = async (
   mode,
-  { getOptionOptional, getSingleOption, getSingleOptionOptional },
+  { getOption, getOptionOptional, getSingleOption, getSingleOptionOptional },
   log = console.log
 ) => {
-  const fileAuth = getSingleOption('file-auth')
-  const timeout = getSingleOptionOptional('timeout') || 0
+  const commonOption = {
+    fileAuth: getSingleOption('file-auth'),
+    timeout: getSingleOptionOptional('timeout') || 0,
+    log
+  }
+  log(`[${packageName}] mode: ${mode}, timeout: ${commonOption.timeout}, version: ${packageVersion}`)
 
-  log(`[${packageName}] mode: ${mode}, timeout: ${timeout}, version: ${packageVersion}`)
   switch (mode) {
     case 'list':
       return list({
         urlPathAction: getSingleOption('url-path-action'),
         listKeyPrefix: getSingleOptionOptional('list-key-prefix') || '',
-        fileAuth,
-        timeout,
-        log
+        ...commonOption
       })
     case 'upload':
       return upload({
         urlFileUpload: getSingleOption('url-file-upload'),
         fileInputPath: getSingleOption('upload-file'),
         filePath: getSingleOption('upload-key'),
-        fileAuth,
-        timeout,
-        log
+        ...commonOption
       })
     case 'download':
       return getOptionOptional('package-json')
         ? downloadPackageAuto({
           urlFileDownload: getSingleOption('url-file-download'),
           pathPackageJSON: getSingleOption('package-json'),
-          packageNamePrefix: getSingleOption('package-name-prefix'),
+          packageNamePrefixList: getOption('package-name-prefix'),
           packagePathPrefix: getSingleOptionOptional('package-path-prefix') || '',
-          fileAuth,
-          timeout,
-          log
+          ...commonOption
         })
         : download({
           urlFileDownload: getSingleOption('url-file-download'),
           fileOutputPath: getSingleOption('download-file'),
           filePath: getSingleOption('download-key'),
-          fileAuth,
-          timeout,
-          log
+          ...commonOption
         })
   }
 }

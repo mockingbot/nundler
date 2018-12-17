@@ -8,7 +8,7 @@
 Not bundler
 
 [i:npm]: https://img.shields.io/npm/v/nundler.svg?colorB=blue
-[i:npm-dev]: https://img.shields.io/npm/v/nundler.svg/dev.svg
+[i:npm-dev]: https://img.shields.io/npm/v/nundler/dev.svg
 [l:npm]: https://npm.im/nundler
 [i:size]: https://packagephobia.now.sh/badge?p=nundler
 [l:size]: https://packagephobia.now.sh/result?p=nundler
@@ -38,6 +38,11 @@ npm run build-library-dev
 start test server:
 ```bash
 npm run start-example-server
+```
+
+clear test: (optional)
+```bash
+npm run example-reset
 ```
 
 run each test:

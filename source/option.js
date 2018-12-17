@@ -1,7 +1,7 @@
 import { getOptionalFormatFlag } from 'dr-js/module/common/module/Option/preset'
 import { ConfigPresetNode, prepareOption } from 'dr-js/module/node/module/Option'
 
-const { SinglePath, SingleString, SingleInteger, BooleanFlag, Config } = ConfigPresetNode
+const { SinglePath, SingleString, AllString, SingleInteger, BooleanFlag, Config } = ConfigPresetNode
 
 const MODE_FORMAT_LIST = [ {
   ...BooleanFlag,
@@ -35,7 +35,7 @@ const MODE_FORMAT_LIST = [ {
       shortName: 'P',
       description: 'download package by config in specified "package.json"',
       extendFormatList: [
-        { ...SingleString, name: 'package-name-prefix', shortName: 'N', description: 'for select package in "package.json"' },
+        { ...AllString, name: 'package-name-prefix', shortName: 'N', description: 'for select package in "package.json"' }, // TODO: support RegExp?
         { ...SingleString, optional: true, name: 'package-path-prefix', description: 'will append to package path' }
       ]
     }

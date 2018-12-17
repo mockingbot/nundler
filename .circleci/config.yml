@@ -1,0 +1,30 @@
+# check yaml syntax summary from here: http://yaml.org/refcard.html
+# check compiled yaml output: http://nodeca.github.io/js-yaml/
+# check yaml doc: https://www.google.com/
+
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - nundler-cache-v1-{{ checksum "package.json" }}
+
+      - run:
+          name: <Setup> javascript
+          command: npm install
+
+      - run:
+          name: <Test> javascript
+          command: npm test
+
+      - save_cache:
+          key: nundler-cache-v1-{{ checksum "package.json" }}
+          paths:
+            - node_modules

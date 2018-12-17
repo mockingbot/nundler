@@ -43,6 +43,8 @@ runMain(async (logger) => {
 
   await verifyOutputBinVersion({ fromOutput, packageJSON, logger })
 
+  argvFlag('test', 'publish', 'publish-dev') && execSync('npm run script-test-example', execOptionRoot)
+
   const pathPackagePack = await packOutput({ fromRoot, fromOutput, logger })
   await publishOutput({ flagList: process.argv, packageJSON, pathPackagePack, extraArgs: [ '--userconfig', '~/mockingbot.npmrc' ], logger })
 }, getLogger(process.argv.slice(2).join('+'), argvFlag('quiet')))

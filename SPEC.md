@@ -42,7 +42,7 @@
 >     --download-key [OPTIONAL-CHECK] [ARGUMENT=1]
 >     --package-json -P [OPTIONAL-CHECK] [ARGUMENT=1]
 >         download package by config in specified "package.json"
->       --package-name-prefix -N [OPTIONAL-CHECK] [ARGUMENT=1]
+>       --package-name-prefix -N [OPTIONAL-CHECK] [ARGUMENT=1+]
 >           for select package in "package.json"
 >       --package-path-prefix [OPTIONAL-CHECK] [ARGUMENT=1]
 >           will append to package path
@@ -66,7 +66,7 @@
 >     export NUNDLER_DOWNLOAD_FILE="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export NUNDLER_DOWNLOAD_KEY="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export NUNDLER_PACKAGE_JSON="[OPTIONAL-CHECK] [ARGUMENT=1]"
->     export NUNDLER_PACKAGE_NAME_PREFIX="[OPTIONAL-CHECK] [ARGUMENT=1]"
+>     export NUNDLER_PACKAGE_NAME_PREFIX="[OPTIONAL-CHECK] [ARGUMENT=1+]"
 >     export NUNDLER_PACKAGE_PATH_PREFIX="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >   "
 > JSON Usage:
@@ -88,7 +88,7 @@
 >     "downloadFile": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "downloadKey": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "packageJson": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
->     "packageNamePrefix": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
+>     "packageNamePrefix": [ "[OPTIONAL-CHECK] [ARGUMENT=1+]" ],
 >     "packagePathPrefix": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >   }
 > ```

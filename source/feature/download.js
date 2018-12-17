@@ -8,7 +8,7 @@ const download = fileDownload
 const downloadPackageAuto = async ({
   urlFileDownload,
   pathPackageJSON,
-  packageNamePrefix,
+  packageNamePrefixList,
   packagePathPrefix = '',
   fileAuth,
   timeout,
@@ -26,31 +26,29 @@ const downloadPackageAuto = async ({
     ...devDependencies,
     ...peerDependencies,
     ...optionalDependencies
-  }).filter(([ packageName ]) => packageName.startsWith(packageNamePrefix))
-
+  }).filter(([ packageName ]) => packageNamePrefixList.find((packageNamePrefix) => packageName.startsWith(packageNamePrefix)))
   __DEV__ && console.log('[downloadPackageAuto]', { packageList })
 
-  for (const [ packageName, packagePath ] of packageList) {
+  const indexMax = packageList.length
+  log(`[downloadPackageAuto] found package: ${indexMax}`)
+  for (let index = 0; index < indexMax; index++) {
+    const [ packageName, packagePath ] = packageList[ index ]
+    const processTag = `[downloadPackageAuto|${index}/${indexMax}]`
+
+    __DEV__ && console.log('[downloadPackageAuto]', { packageName, packagePath })
     if (!packagePath.startsWith('./')) throw new Error(`[downloadPackageAuto] invalid package path: ${packagePath} (${packageName})`)
 
     const fileOutputPath = resolve(dirname(pathPackageJSON), packagePath)
 
-    if (await visibleAsync(fileOutputPath)) log(`[downloadPackageAuto] skip exist ${packageName}: ${packagePath}`)
+    if (await visibleAsync(fileOutputPath)) log(`${processTag} skip exist ${packageName}: ${packagePath}`)
     else {
-      const tempFile = `${fileOutputPath}_TEMP`
+      const fileTempPath = `${fileOutputPath}_temp_${Date.now().toString(36)}`
+      const fileKey = toPosixPath(normalize(join(packagePathPrefix, packagePath)))
+      __DEV__ && console.log('[downloadPackageAuto]', { fileTempPath, fileKey })
 
-      __DEV__ && console.log('[downloadPackageAuto]', { packageName, packagePath, tempFile, filePath: toPosixPath(normalize(packagePath)) })
-
-      await fileDownload({
-        urlFileDownload,
-        fileOutputPath: tempFile,
-        filePath: toPosixPath(normalize(join(packagePathPrefix, packagePath))),
-        fileAuth,
-        timeout,
-        log
-      })
-      await modify.move(tempFile, fileOutputPath)
-      log(`[downloadPackageAuto] get ${packageName}: ${fileOutputPath}`)
+      await fileDownload({ urlFileDownload, fileOutputPath: fileTempPath, filePath: fileKey, fileAuth, timeout, log })
+      await modify.move(fileTempPath, fileOutputPath)
+      log(`${processTag} get ${packageName}: ${packagePath}`)
     }
   }
 }
