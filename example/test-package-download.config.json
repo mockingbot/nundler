@@ -1,0 +1,7 @@
+{
+  "fileAuth": "./example-gitignore.key",
+  "download": true,
+  "urlFileDownload": "http://localhost:18080/file-serve",
+  "packageJson": "./sample-package/package.json",
+  "packageNamePrefix": "@nundler/local"
+}

@@ -1,0 +1,7 @@
+{
+  "fileAuth": "./example-gitignore.key",
+  "upload": true,
+  "urlFileUpload": "http://localhost:18080/file-chunk-upload",
+  "uploadFile": "../package.json",
+  "uploadKey": "test-upload-gitignore/test-file"
+}

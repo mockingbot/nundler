@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "devDependencies": {
+    "@nundler/local-aaa": "./.nundler-gitignore/nundler-local-aaa-0.0.0.tgz",
+    "@nundler/local-bbb": "./.nundler-gitignore/nundler-local-bbb-1.1.1.tgz",
+    "@nundler/local-ccc": "./.nundler-gitignore/nundler-local-ccc-2.2.2.tgz"
+  }
+}

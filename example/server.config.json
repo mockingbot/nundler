@@ -1,0 +1,8 @@
+{
+  "server": true,
+  "port": 18080,
+  "authFile": "./example-gitignore.key",
+  "authGen": true,
+  "explorerRootPath": "./server-root",
+  "explorerUploadMergePath": "./server-root/[UPLOAD]"
+}
