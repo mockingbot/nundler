@@ -1,13 +1,17 @@
 import { resolve } from 'path'
 import { writeFileSync } from 'fs'
+
 import { createDirectory } from 'dr-js/module/node/file/File'
 import { modify } from 'dr-js/module/node/file/Modify'
+
 import { argvFlag, runMain } from 'dr-dev/module/main'
 import { getLogger } from 'dr-dev/module/logger'
 
 const fromExample = (...args) => resolve(__dirname, ...args)
 
 const SAMPLE_FILE_LIST = [
+  [ '@nundler/local-aaa', './.nundler-gitignore/nundler-local-aaa-0.0.2.tgz' ], // extra file for version check
+  [ '@nundler/local-aaa', './.nundler-gitignore/nundler-local-aaa-0.0.1.tgz' ], // extra file for version check
   [ '@nundler/local-aaa', './.nundler-gitignore/nundler-local-aaa-0.0.0.tgz' ],
   [ '@nundler/local-bbb', './.nundler-gitignore/nundler-local-bbb-1.1.1.tgz' ],
   [ '@nundler/local-ccc', './.nundler-gitignore/nundler-local-ccc-2.2.2.tgz' ]

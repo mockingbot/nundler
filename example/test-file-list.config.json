@@ -1,6 +1,6 @@
 {
-  "fileAuth": "./example-gitignore.key",
   "list": true,
   "urlPathAction": "http://localhost:18080/path-action",
-  "listKeyPrefix": ""
+  "listKeyPrefix": "",
+  "authFile": "./example-gitignore.key"
 }

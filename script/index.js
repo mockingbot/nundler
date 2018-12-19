@@ -2,7 +2,6 @@ import { resolve } from 'path'
 import { execSync } from 'child_process'
 
 import { binary as formatBinary } from 'dr-js/module/common/format'
-import { modify } from 'dr-js/module/node/file/Modify'
 
 import { argvFlag, runMain } from 'dr-dev/module/main'
 import { getLogger } from 'dr-dev/module/logger'
@@ -20,18 +19,21 @@ const execOptionRoot = { cwd: fromRoot(), stdio: argvFlag('quiet') ? [ 'ignore',
 runMain(async (logger) => {
   const { padLog } = logger
 
-  padLog('generate spec')
-  execSync(`npm run script-generate-spec`, execOptionRoot)
-
   const packageJSON = await initOutput({ fromRoot, fromOutput, logger })
-
-  padLog(`copy bin`)
-  await modify.copy(fromRoot('source-bin/index.js'), fromOutput('bin/index.js'))
 
   if (!argvFlag('pack')) return
 
+  padLog('generate spec')
+  execSync(`npm run script-generate-spec`, execOptionRoot)
+
   padLog(`build library`)
   execSync('npm run build-library', execOptionRoot)
+
+  padLog(`build bin`)
+  execSync('npm run build-bin', execOptionRoot)
+
+  padLog(`delete temp build file`)
+  execSync('npm run script-delete-temp-build-file', execOptionRoot)
 
   const fileList = await getScriptFileListFromPathList([ '.' ], fromOutput)
 
@@ -43,7 +45,9 @@ runMain(async (logger) => {
 
   await verifyOutputBinVersion({ fromOutput, packageJSON, logger })
 
-  argvFlag('test', 'publish', 'publish-dev') && execSync('npm run script-test-example', execOptionRoot)
+  if (argvFlag('test', 'publish', 'publish-dev')) {
+    execSync('npm run test-example', execOptionRoot)
+  }
 
   const pathPackagePack = await packOutput({ fromRoot, fromOutput, logger })
   await publishOutput({ flagList: process.argv, packageJSON, pathPackagePack, extraArgs: [ '--userconfig', '~/mockingbot.npmrc' ], logger })

@@ -1,0 +1,8 @@
+{
+  "upload": true,
+  "packageJson": "./sample-package/package.json",
+  "packageNameFilter": "@nundler/local",
+  "urlFileUpload": "http://localhost:18080/file-chunk-upload",
+  "urlPathAction": "http://localhost:18080/path-action",
+  "authFile": "./example-gitignore.key"
+}

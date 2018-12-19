@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "nundler",
-  "version": "0.0.2",
+  "version": "0.0.3-dev.0",
   "description": "Not bundler",
   "author": "mockingbot",
   "license": "MIT",
@@ -13,20 +13,27 @@
     "script-pack-test": "babel-node script pack test",
     "script-publish": "babel-node script pack publish",
     "script-publish-dev": "babel-node script pack publish-dev",
-    "script-generate-spec": "babel-node script/generateSpec",
-    "script-test-example": "babel-node script/testExample",
+    "script-generate-spec": "babel-node ./script/generateSpec ./tempFileDelete.config.json",
+    "script-delete-temp-build-file": "dr-js -c ./tempFileDelete.config.json",
     "// build =======================": "",
     "build-library": "babel-node script/webpack production profile",
     "build-library-dev": "babel-node script/webpack development watch",
-    "// test ========================": "",
+    "build-bin": "babel-node ./script/webpack-bin production profile",
+    "build-bin-dev": "babel-node ./script/webpack-bin development watch",
+    "// example =====================": "",
     "example-reset": "babel-node example/index.js clear init",
-    "start-example-server": "npx dr-server -c example/server.config.json",
-    "test-list": "node output-gitignore/bin -c example/test-list.config.json",
-    "test-upload": "node output-gitignore/bin -c example/test-upload.config.json",
-    "test-download": "node output-gitignore/bin -c example/test-download.config.json",
-    "test-package-download": "node output-gitignore/bin -c example/test-package-download.config.json",
+    "example-start-server": "npx dr-server -c example/server.config.json",
+    "example-file-list": "node output-gitignore/bin -c example/test-file-list.config.json",
+    "example-file-upload": "node output-gitignore/bin -c example/test-file-upload.config.json",
+    "example-file-download": "node output-gitignore/bin -c example/test-file-download.config.json",
+    "example-package-list": "node output-gitignore/bin -c example/test-package-list.config.json",
+    "example-package-upload": "node output-gitignore/bin -c example/test-package-upload.config.json",
+    "example-package-download": "node output-gitignore/bin -c example/test-package-download.config.json",
+    "// test ========================": "",
+    "test-example": "babel-node script/testExample",
     "// =============================": "",
     "analyze-stat": "npx webpack-bundle-analyzer .temp-gitignore/profile-stat.json",
+    "analyze-stat-bin": "npx webpack-bundle-analyzer --port 9999 .temp-gitignore/profile-stat-bin.json",
     "test": "npm run script-pack-test",
     "prepack": "echo \"Error: pack with script-*\" && exit 1"
   },
@@ -35,9 +42,9 @@
     "npm": ">=6"
   },
   "devDependencies": {
-    "dr-dev": "0.0.1",
-    "dr-dev-web": "0.0.1",
-    "dr-js": "^0.18.2",
-    "dr-server": "^0.0.28"
+    "dr-dev": "0.0.3-dev.3",
+    "dr-dev-web": "0.0.3-dev.3",
+    "dr-js": "0.20.0-dev.3",
+    "dr-server": "0.0.30-dev.4"
   }
 }

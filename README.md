@@ -27,56 +27,48 @@ Not bundler
   - list of all directly accessible codes, sort of an API lockfile
 
 
-#### Test setup
+#### Test example setup
 
 build dev with watch:
 ```bash
 npm run script-base
 npm run build-library-dev
+npm run build-bin-dev
 ```
 
-start test server:
+start example server:
 ```bash
-npm run start-example-server
+npm run example-start-server
 ```
 
-clear test: (optional)
+clear up example file: (optional)
 ```bash
 npm run example-reset
 ```
 
-run each test:
+run each example:
 ```bash
-npm run test-list
-npm run test-upload
-npm run test-download
-npm run test-package-download
+npm run example-file-list
+npm run example-file-upload
+npm run example-file-download
+npm run example-package-list
+npm run example-package-upload
+npm run example-package-download
 ```
 
+or run `npm test` for full build & test
 
 ## Concept
 
 This package should provide 
 a somewhat usable **private package setup**
 
-This package can `upload/download` other npm package 
+This package can `list/upload/download` other npm package 
 from self-hosted server
+with home-made auth check
 
 This package do not help pack package `.tgz`,
-or do the package install
-
-currently the command:
-- list: 
-  > list file on server
-- upload: 
-  > upload `.tgz` file to server with `key` (path)
-- download:
-  > download `.tgz` file from server with `key` (path)
-- download + package-json:
-  > download `.tgz` file from server,
-  > according to dependency in `package.json`
-  > select with specified `name-prefix`
-  > should combine with `preinstall`
+or run the actual package install
 
 #### Common Setup
 
@@ -107,9 +99,10 @@ add to `preinstall`:
 npx nundler\
   --download\
   --package-json ./package.json\
-  --package-name-prefix "@nundler/local-"\
+  --package-name-filter "@nundler/local-"\
   --package-path-prefix "some/server/path/prefix"\
-  --url-file-download "https://url/file/download"
+  --url-file-download "https://url/file/download"\
+  --auth-file "./path/to/auth/file"
   # or put all to --config ./nundler.config.json
 ```
 
@@ -124,27 +117,24 @@ some/server/path/prefix/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz
 some/server/path/prefix/.nundler-gitignore/nundler-local-ccc-2.2.2.tgz
 ```
 
-this setup is under `example/sample-package/`
+similar example setup is under `example/sample-package/`
 
-run the test with:
+test with:
 ```
 # first
-example-reset # reset example file
+npm run example-reset # reset example file
 
 # then
-start-example-server # start file server
+npm run example-start-server # start file server
 
-# check under `sample-package`
+# check under `example/sample-package` first, should only have `package.json`
 
-test-package-download 
+npm run example-package-download 
 
-# check under `sample-package` again, should have `.nundler-gitignore/`
+# now should have `.tgz` file in `example/sample-package/.nundler-gitignore/`
 ```
-
-or check `npm test` for full test step output
 
 #### Limitation
 
-- require package to have some common `name-prefix`
 - require edit `preinstall` script
 - require use package `path` instead of `version` in `package.json`

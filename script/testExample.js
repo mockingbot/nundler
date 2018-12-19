@@ -1,14 +1,14 @@
 import { resolve } from 'path'
 
-import { setTimeoutAsync } from 'dr-js/module/common/time'
-import { stringIndentLine } from 'dr-js/module/common/format'
+import { indentLine } from 'dr-js/module/common/string'
 import { strictEqual, stringifyEqual, notStrictEqual } from 'dr-js/module/common/verify'
 import { visibleAsync, statAsync } from 'dr-js/module/node/file/function'
-import { run, runQuiet } from 'dr-js/module/node/system/Run'
-import { getProcessList, getProcessPidMap, getProcessTree, findProcessTreeNode, checkProcessExist, tryKillProcessTreeNode } from 'dr-js/module/node/system/ProcessStatus'
+import { modify } from 'dr-js/module/node/file/Modify'
+import { runQuiet } from 'dr-js/module/node/system/Run'
 
 import { argvFlag, runMain } from 'dr-dev/module/main'
 import { getLogger } from 'dr-dev/module/logger'
+import { withRunBackground } from 'dr-dev/module/exec'
 
 const PATH_ROOT = resolve(__dirname, '..')
 const fromRoot = (...args) => resolve(PATH_ROOT, ...args)
@@ -24,7 +24,7 @@ const runWithOutputString = async (command) => {
   const { promise, stdoutBufferPromise } = runQuiet({ command, option: { ...execOptionRoot, stdio: [ 'ignore', 'pipe', 'pipe' ] } })
   await promise
   const outputString = String(await stdoutBufferPromise)
-  console.log(stringIndentLine(outputString, '  > '))
+  console.log(indentLine(outputString, '  > '))
   return outputString
 }
 
@@ -32,91 +32,117 @@ runMain(async ({ padLog, stepLog }) => {
   padLog('reset example')
   await runWithOutputString('npm run example-reset')
 
-  padLog('start example-server')
-  const { subProcess, promise } = run({ command: 'npm run start-example-server', option: { ...execOptionRoot, stdio: 'ignore' } })
-  const exitPromise = promise.catch((error) => __DEV__ && console.log(`example-server exit: ${error}`))
-  await setTimeoutAsync(1000) // wait for npm
-  if (!await checkProcessExist({ pid: subProcess.pid })) throw new Error('failed to start example server')
-  const processList = await getProcessList()
-  const subProcessInfo = (await getProcessPidMap(processList))[ subProcess.pid ]
-  const { pid, command, subTree } = await findProcessTreeNode(subProcessInfo, await getProcessTree(processList)) // drops ppid since sub tree may get chopped
-  __DEV__ && console.log({ pid, command, subTree })
-  stepLog('start example-server done')
+  padLog('start example server')
+  await withRunBackground({
+    command: 'npm run example-start-server',
+    option: { ...execOptionRoot, stdio: 'ignore' }
+  }, async () => {
+    stepLog('start example server done')
 
-  padLog('[test] list')
-  const listOutputString = await runWithOutputString('npm run test-list')
-  stringifyEqual([
-    listOutputString.includes('.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'),
-    listOutputString.includes('.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'),
-    listOutputString.includes('.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
-  ], [ true, true, true ], '[list] should list expected file')
+    padLog('[test] file-list')
+    const listOutputString = await runWithOutputString('npm run example-file-list')
+    stringifyEqual([
+      listOutputString.includes('.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'),
+      listOutputString.includes('.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'),
+      listOutputString.includes('.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
+    ], [ true, true, true ], '[file-list] should list expected file')
 
-  padLog('[test] upload')
-  await runWithOutputString('npm run test-upload')
-  await verifyExampleFileExist('upload', 'server-root/test-upload-gitignore/test-file')
+    padLog('[test] file-upload')
+    await runWithOutputString('npm run example-file-upload')
+    await verifyExampleFileExist('upload', 'server-root/test-upload-gitignore/test-file')
 
-  padLog('[test] upload (should rewrite)')
-  const statUpload = await getExampleFileStat('server-root/test-upload-gitignore/test-file')
-  await runWithOutputString('npm run test-upload')
-  const statUploadAgain = await getExampleFileStat('server-root/test-upload-gitignore/test-file')
-  notStrictEqual(statUpload.mtimeMs, statUploadAgain.mtimeMs, '[upload] should upload file mtimeMs')
+    padLog('[test] file-upload (should rewrite)')
+    const statUpload = await getExampleFileStat('server-root/test-upload-gitignore/test-file')
+    await runWithOutputString('npm run example-file-upload')
+    const statUploadAgain = await getExampleFileStat('server-root/test-upload-gitignore/test-file')
+    notStrictEqual(statUpload.mtimeMs, statUploadAgain.mtimeMs, '[file-upload] should upload file mtimeMs')
 
-  padLog('[test] download')
-  await runWithOutputString('npm run test-download')
-  await verifyExampleFileExist('download', 'server-root/test-download-gitignore/test-file')
+    padLog('[test] file-download')
+    await runWithOutputString('npm run example-file-download')
+    await verifyExampleFileExist('download', 'server-root/test-download-gitignore/test-file')
 
-  padLog('[test] download (should rewrite)')
-  const statDownload = await getExampleFileStat('server-root/test-download-gitignore/test-file')
-  await runWithOutputString('npm run test-download')
-  const statDownloadAgain = await getExampleFileStat('server-root/test-download-gitignore/test-file')
-  notStrictEqual(statDownload.mtimeMs, statDownloadAgain.mtimeMs, '[download] should update file mtimeMs')
+    padLog('[test] file-download (should rewrite)')
+    const statDownload = await getExampleFileStat('server-root/test-download-gitignore/test-file')
+    await runWithOutputString('npm run example-file-download')
+    const statDownloadAgain = await getExampleFileStat('server-root/test-download-gitignore/test-file')
+    notStrictEqual(statDownload.mtimeMs, statDownloadAgain.mtimeMs, '[file-download] should update file mtimeMs')
 
-  padLog('[test] package-download')
-  await runWithOutputString('npm run test-package-download')
-  await verifyExampleFileExist('package-download', 'sample-package/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz')
-  await verifyExampleFileExist('package-download', 'sample-package/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz')
-  await verifyExampleFileExist('package-download', 'sample-package/.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
+    {
+      padLog('[test] package-download')
+      await runWithOutputString('npm run example-package-download')
+      await verifyExampleFileExist('package-download', 'sample-package/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz')
+      await verifyExampleFileExist('package-download', 'sample-package/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz')
+      await verifyExampleFileExist('package-download', 'sample-package/.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
 
-  padLog('[test] package-download (should skip)')
-  const statPackageDownloadList = [
-    await getExampleFileStat('sample-package/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'),
-    await getExampleFileStat('sample-package/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'),
-    await getExampleFileStat('sample-package/.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
-  ]
-  await runWithOutputString('npm run test-package-download')
-  const statPackageDownloadAgainList = [
-    await getExampleFileStat('sample-package/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'),
-    await getExampleFileStat('sample-package/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'),
-    await getExampleFileStat('sample-package/.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
-  ]
-  stringifyEqual(
-    statPackageDownloadList.map(({ mtimeMs }) => mtimeMs),
-    statPackageDownloadAgainList.map(({ mtimeMs }) => mtimeMs),
-    '[package-download] should keep file mtimeMs'
-  )
+      padLog('[test] package-download (should skip)')
+      const statPackageDownloadList = [
+        await getExampleFileStat('sample-package/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'),
+        await getExampleFileStat('sample-package/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'),
+        await getExampleFileStat('sample-package/.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
+      ]
+      await runWithOutputString('npm run example-package-download')
+      const statPackageDownloadAgainList = [
+        await getExampleFileStat('sample-package/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'),
+        await getExampleFileStat('sample-package/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'),
+        await getExampleFileStat('sample-package/.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
+      ]
+      stringifyEqual(
+        statPackageDownloadList.map(({ mtimeMs }) => mtimeMs),
+        statPackageDownloadAgainList.map(({ mtimeMs }) => mtimeMs),
+        '[package-download] should keep file mtimeMs'
+      )
+    }
 
-  padLog('[test] list (should update)')
-  const listUpdateOutputString = await runWithOutputString('npm run test-list')
-  stringifyEqual([
-    listUpdateOutputString.includes('test-download-gitignore/test-file'),
-    listUpdateOutputString.includes('test-upload-gitignore/test-file'),
-    listUpdateOutputString.includes('.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'),
-    listUpdateOutputString.includes('.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'),
-    listUpdateOutputString.includes('.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
-  ], [ true, true, true, true, true ], '[list] should list expected file')
+    {
+      padLog('[test] package-upload')
+      await modify.delete(fromRoot('example/server-root/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'))
+      await modify.delete(fromRoot('example/server-root/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'))
+      await runWithOutputString('npm run example-package-upload')
+      await verifyExampleFileExist('package-download', 'server-root/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz')
+      await verifyExampleFileExist('package-download', 'server-root/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz')
 
-  padLog('[test] list (should prefix filter)')
-  const listPrefixOutputString = await runWithOutputString('npm run test-list -- --list-key-prefix .nundler-gitignore')
-  stringifyEqual([
-    listPrefixOutputString.includes('test-download-gitignore/test-file'),
-    listPrefixOutputString.includes('test-upload-gitignore/test-file'),
-    listPrefixOutputString.includes('.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'),
-    listPrefixOutputString.includes('.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'),
-    listPrefixOutputString.includes('.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
-  ], [ false, false, true, true, true ], '[list] should list expected file')
+      padLog('[test] package-upload (should skip)')
+      const statUpload = await getExampleFileStat('server-root/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz')
+      await runWithOutputString('npm run example-package-upload')
+      const statUploadAgain = await getExampleFileStat('server-root/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz')
+      strictEqual(statUpload.mtimeMs, statUploadAgain.mtimeMs, '[file-upload] should upload file mtimeMs')
+    }
 
-  padLog('stop example-server')
-  await tryKillProcessTreeNode({ pid, command, subTree })
-  await exitPromise
-  stepLog('stop example-server done')
+    {
+      padLog('[test] package-list')
+      const listOutputString = await runWithOutputString('npm run example-package-list')
+      stringifyEqual([
+        listOutputString.includes('@nundler/local-aaa'),
+        listOutputString.includes('0.0.0'),
+        listOutputString.includes('0.0.2'),
+        listOutputString.includes('@nundler/local-bbb'),
+        listOutputString.includes('1.1.1'),
+        listOutputString.includes('@nundler/local-ccc'),
+        listOutputString.includes('2.2.2')
+      ], [ true, true, true, true, true, true, true ], '[package-list] should list expected text')
+    }
+
+    padLog('[test] file-list (should update)')
+    const listUpdateOutputString = await runWithOutputString('npm run example-file-list')
+    stringifyEqual([
+      listUpdateOutputString.includes('test-download-gitignore/test-file'),
+      listUpdateOutputString.includes('test-upload-gitignore/test-file'),
+      listUpdateOutputString.includes('.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'),
+      listUpdateOutputString.includes('.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'),
+      listUpdateOutputString.includes('.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
+    ], [ true, true, true, true, true ], '[file-list] should list expected file')
+
+    padLog('[test] file-list (should prefix filter)')
+    const listPrefixOutputString = await runWithOutputString('npm run example-file-list -- --list-key-prefix .nundler-gitignore')
+    stringifyEqual([
+      listPrefixOutputString.includes('test-download-gitignore/test-file'),
+      listPrefixOutputString.includes('test-upload-gitignore/test-file'),
+      listPrefixOutputString.includes('.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'),
+      listPrefixOutputString.includes('.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'),
+      listPrefixOutputString.includes('.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
+    ], [ false, false, true, true, true ], '[file-list] should list expected file')
+
+    padLog('stop example server')
+  })
+  stepLog('stop example server done')
 }, getLogger([ 'test-example', ...process.argv.slice(2) ].join('+'), argvFlag('quiet')))
