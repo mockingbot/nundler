@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "nundler",
-  "version": "0.0.3-dev.0",
+  "version": "0.0.3-dev.1",
   "description": "Not bundler",
   "author": "mockingbot",
   "license": "MIT",
@@ -44,7 +44,7 @@
   "devDependencies": {
     "dr-dev": "0.0.3-dev.3",
     "dr-dev-web": "0.0.3-dev.3",
-    "dr-js": "0.20.0-dev.3",
-    "dr-server": "0.0.30-dev.4"
+    "dr-js": "^0.20.0",
+    "dr-server": "^0.0.30"
   }
 }
