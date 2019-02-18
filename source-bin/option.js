@@ -37,10 +37,9 @@ const OPTION_CONFIG = {
       [ 'auth-file/SP|path to auth file', { optional: getOptionalFormatFlag(...MODE_NAME_LIST) } ],
       'auth-key/SS,O|auth key, of not use default',
 
-      [ 'package-json,P/SP,O|enable [PACKAGE] mode, pass the path of "package.json"', parseCompactList(
+      [ 'package-json,P/AP,O|enable [PACKAGE] mode, pass the path of "package.json"', parseCompactList(
         'package-name-filter,N/A|pass RegExp or String(startsWith) to filter package in "package.json"',
-        'package-path-prefix/SS,O|String will prefix server package key',
-        'package-file/SP,O|package path for upload'
+        'package-path-prefix/SS,O|String will prefix server package key'
       ) ]
     ),
     ...MODE_FORMAT_LIST

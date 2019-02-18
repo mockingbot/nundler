@@ -33,14 +33,12 @@
 >       path to auth file
 >   --auth-key [OPTIONAL] [ARGUMENT=1]
 >       auth key, of not use default
->   --package-json --P -P [OPTIONAL] [ARGUMENT=1]
+>   --package-json --P -P [OPTIONAL] [ARGUMENT=1+]
 >       enable [PACKAGE] mode, pass the path of "package.json"
 >     --package-name-filter --N -N [OPTIONAL-CHECK] [ARGUMENT=0+]
 >         pass RegExp or String(startsWith) to filter package in "package.json"
 >     --package-path-prefix [OPTIONAL-CHECK] [ARGUMENT=1]
 >         String will prefix server package key
->     --package-file [OPTIONAL-CHECK] [ARGUMENT=1]
->         package path for upload
 >   --list --L -L [OPTIONAL] [ARGUMENT=0+]
 >       [FILE] list file on server
 >       [PACKAGE] list local/server package version, like "npm outdated"
@@ -71,10 +69,9 @@
 >     export NUNDLER_TIMEOUT="[OPTIONAL] [ARGUMENT=1]"
 >     export NUNDLER_AUTH_FILE="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export NUNDLER_AUTH_KEY="[OPTIONAL] [ARGUMENT=1]"
->     export NUNDLER_PACKAGE_JSON="[OPTIONAL] [ARGUMENT=1]"
+>     export NUNDLER_PACKAGE_JSON="[OPTIONAL] [ARGUMENT=1+]"
 >     export NUNDLER_PACKAGE_NAME_FILTER="[OPTIONAL-CHECK] [ARGUMENT=0+]"
 >     export NUNDLER_PACKAGE_PATH_PREFIX="[OPTIONAL-CHECK] [ARGUMENT=1]"
->     export NUNDLER_PACKAGE_FILE="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export NUNDLER_LIST="[OPTIONAL] [ARGUMENT=0+]"
 >     export NUNDLER_URL_PATH_ACTION="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export NUNDLER_LIST_KEY_PREFIX="[OPTIONAL-CHECK] [ARGUMENT=1]"
@@ -96,10 +93,9 @@
 >     "timeout": [ "[OPTIONAL] [ARGUMENT=1]" ],
 >     "authFile": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "authKey": [ "[OPTIONAL] [ARGUMENT=1]" ],
->     "packageJson": [ "[OPTIONAL] [ARGUMENT=1]" ],
+>     "packageJson": [ "[OPTIONAL] [ARGUMENT=1+]" ],
 >     "packageNameFilter": [ "[OPTIONAL-CHECK] [ARGUMENT=0+]" ],
 >     "packagePathPrefix": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
->     "packageFile": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "list": [ "[OPTIONAL] [ARGUMENT=0+]" ],
 >     "urlPathAction": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "listKeyPrefix": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],

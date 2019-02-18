@@ -20,12 +20,13 @@ const runMode = async (modeName, { tryGet, tryGetFirst, get, getFirst }) => {
 
   const commonOption = { timeout, authFetch, log }
   if (tryGet('package-json')) {
-    commonOption.packageList = loadPackageList({
-      pathPackageJSON: getFirst('package-json'),
-      packageNameFilterList: get('package-name-filter'),
-      packagePathPrefix: tryGetFirst('package-path-prefix') || '',
-      log
-    })
+    const pathPackageJSONList = get('package-json')
+    const packageNameFilterList = get('package-name-filter')
+    const packagePathPrefix = tryGetFirst('package-path-prefix') || ''
+    commonOption.packageList = pathPackageJSONList.reduce(
+      (o, pathPackageJSON) => o.concat(loadPackageList({ pathPackageJSON, packageNameFilterList, packagePathPrefix, log })),
+      []
+    )
     switch (modeName) {
       case 'list':
         return listPackage({
