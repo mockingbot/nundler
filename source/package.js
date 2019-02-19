@@ -107,13 +107,20 @@ const listPackage = async ({
     const relatedServerPackageList = serverPackageList
       .filter((serverPackage) => packageFileName.startsWith(serverPackage.packageFileName))
       .sort((a, b) => compareSemVer(b.packageVersion, a.packageVersion)) // big version first
-    statusList.push([ packageName, packageVersion, (relatedServerPackageList[ 0 ] || {}).packageVersion, relatedServerPackageList.length ])
+    const serverPackageVersion = (relatedServerPackageList[ 0 ] || {}).packageVersion
+    statusList.push([
+      packageName,
+      packageVersion,
+      serverPackageVersion,
+      relatedServerPackageList.length,
+      packageVersion === serverPackageVersion
+    ])
   }
 
   log(`[PackageList]`)
   log(indentLine(padTable({
-    table: [ [ 'name', 'local', 'server', 'count' ], ...statusList ],
-    padFuncList: [ 'L', 'R', 'L', 'R' ]
+    table: [ [ 'name', 'local', 'server', '#', 'match' ], ...statusList ],
+    padFuncList: [ 'L', 'R', 'L', 'R', 'R' ]
   })))
 }
 

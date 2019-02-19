@@ -23,27 +23,28 @@ const runMode = async (modeName, { tryGet, tryGetFirst, get, getFirst }) => {
     const pathPackageJSONList = get('package-json')
     const packageNameFilterList = get('package-name-filter')
     const packagePathPrefix = tryGetFirst('package-path-prefix') || ''
-    commonOption.packageList = pathPackageJSONList.reduce(
-      (o, pathPackageJSON) => o.concat(loadPackageList({ pathPackageJSON, packageNameFilterList, packagePathPrefix, log })),
-      []
-    )
-    switch (modeName) {
-      case 'list':
-        return listPackage({
-          urlPathAction: getFirst('url-path-action'),
-          ...commonOption
-        })
-      case 'upload':
-        return uploadPackage({
-          urlFileUpload: getFirst('url-file-upload'),
-          urlPathAction: getFirst('url-path-action'),
-          ...commonOption
-        })
-      case 'download':
-        return downloadPackage({
-          urlFileDownload: getFirst('url-file-download'),
-          ...commonOption
-        })
+    for (const packageList of pathPackageJSONList.map((pathPackageJSON) => loadPackageList({ pathPackageJSON, packageNameFilterList, packagePathPrefix, log }))) {
+      switch (modeName) {
+        case 'list':
+          return listPackage({
+            urlPathAction: getFirst('url-path-action'),
+            packageList,
+            ...commonOption
+          })
+        case 'upload':
+          return uploadPackage({
+            urlFileUpload: getFirst('url-file-upload'),
+            urlPathAction: getFirst('url-path-action'),
+            packageList,
+            ...commonOption
+          })
+        case 'download':
+          return downloadPackage({
+            urlFileDownload: getFirst('url-file-download'),
+            packageList,
+            ...commonOption
+          })
+      }
     }
   } else {
     switch (modeName) {
