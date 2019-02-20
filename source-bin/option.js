@@ -2,23 +2,38 @@ import { Preset, getOptionalFormatFlag, prepareOption } from 'dr-js/module/node/
 
 const { Config, parseCompactList } = Preset
 
-// TODO: split to `source-bin` and support script API call?
+const FILE_DIRECTORY_KEY_DESCRIPTION = 'for [FILE/DIRECTORY] mode, recommend use .tgz for directory pack'
+
+const getDescription = (fileDesc, packageDesc, directoryDesc = fileDesc) => `[FILE] ${fileDesc}\n[PACKAGE] ${packageDesc}\n[DIRECTORY] ${directoryDesc}`
 
 const MODE_FORMAT_LIST = parseCompactList(
-  [ 'list,L/T|[FILE] list file on server\n[PACKAGE] list local/server package version, like "npm outdated"', parseCompactList(
+  [ `list,L/T|${getDescription(
+    'list path on server',
+    'list local/server package version, like "npm outdated"'
+  )}`, parseCompactList(
     'url-path-action/SS',
-    'list-key-prefix/SS,O|only for [FILE] mode'
+    'list-key-prefix/SS,O|for [FILE/DIRECTORY] mode'
   ) ],
-  [ 'upload,U/T|[FILE] upload file to server\n[PACKAGE] upload package to server, skip server existing, need also set "url-path-action"', parseCompactList(
+  [ `upload,U/T|${getDescription(
+    'upload file to server, overwrite',
+    'upload package to server, skip server existing, need also set "url-path-action"',
+    'pack & upload directory to server, as .tgz file, overwrite'
+  )}`, parseCompactList(
     'url-file-upload/SS',
-    [ 'upload-key/SS,O|only for [FILE] mode', parseCompactList(
-      'upload-file/SP'
+    [ `upload-key/SS,O|${FILE_DIRECTORY_KEY_DESCRIPTION}`, parseCompactList(
+      'upload-file/SP,O|for [FILE] mode',
+      'upload-directory/SP,O|for [DIRECTORY] mode'
     ) ]
   ) ],
-  [ 'download,D/T|[FILE] download file from server\n[PACKAGE] download all package found in "package-json", skip local existing, good for npm "preinstall" script', parseCompactList(
+  [ `download,D/T|${getDescription(
+    'download file from server',
+    'download all package found in "package-json", skip local existing, good for npm "preinstall" script',
+    'download & unpack directory from server'
+  )}`, parseCompactList(
     'url-file-download/SS',
-    [ 'download-key/SS,O|only for [FILE] mode', parseCompactList(
-      'download-file/SP'
+    [ `download-key/SS,O|${FILE_DIRECTORY_KEY_DESCRIPTION}`, parseCompactList(
+      'download-file/SP,O|for [FILE] mode',
+      'download-directory/SP,O|for [DIRECTORY] mode'
     ) ]
   ) ]
 )
@@ -32,14 +47,19 @@ const OPTION_CONFIG = {
       'help,h/T|show full help',
       'quiet,q/T|less log',
       'version,v/T|show version',
-      'timeout/SI,O',
 
+      'magic-key/T,O|enable replace "{git-branch/git-commit-hash/timestamp/date-iso}" to current value in list/upload/download key name & directory-pack-info',
       [ 'auth-file/SP|path to auth file', { optional: getOptionalFormatFlag(...MODE_NAME_LIST) } ],
       'auth-key/SS,O|auth key, of not use default',
+      'timeout/SI,O|set timeout, default to 0 (no timeout)',
 
       [ 'package-json,P/AP,O|enable [PACKAGE] mode, pass the path of "package.json"', parseCompactList(
         'package-name-filter,N/A|pass RegExp or String(startsWith) to filter package in "package.json"',
         'package-path-prefix/SS,O|String will prefix server package key'
+      ) ],
+
+      [ 'directory,DIR/T,O|enable [DIRECTORY] mode, pack directory as .tgz file in server, require "tar" command', parseCompactList(
+        'directory-pack-info/AS,O|extra info to add to PACK_INFO for .tgz file, default to "{date-iso}"'
       ) ]
     ),
     ...MODE_FORMAT_LIST

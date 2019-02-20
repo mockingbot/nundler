@@ -54,6 +54,9 @@ npm run example-file-download
 npm run example-package-list
 npm run example-package-upload
 npm run example-package-download
+npm run example-directory-list
+npm run example-directory-upload
+npm run example-directory-download
 ```
 
 or run `npm test` for full build & test

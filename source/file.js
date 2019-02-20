@@ -22,8 +22,7 @@ const listFile = async ({
   })
   __DEV__ && console.log(`[listPackage]`, { listKeyPrefix, relativeFrom, fileList })
 
-  log(`[List] listKeyPrefix: ${listKeyPrefix}`)
-  log(indentLine(padTable({
+  log(`[List] listKeyPrefix: ${listKeyPrefix}\n${indentLine(padTable({
     table: [
       [ 'mTime', 'size', 'key' ],
       ...fileList
@@ -31,7 +30,7 @@ const listFile = async ({
         .map(([ name, size, mTimeMs ]) => [ new Date(mTimeMs).toISOString(), `${binary(size)}B`, toPosixPath(join(relativeFrom, name)) ])
     ],
     padFuncList: [ 'L', 'R', 'L' ]
-  })))
+  }))}`)
 }
 
 const uploadFile = fileUpload
@@ -41,5 +40,5 @@ const downloadFile = fileDownload
 export {
   listFile,
   uploadFile,
-  downloadFile,
+  downloadFile
 }

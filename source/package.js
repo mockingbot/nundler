@@ -117,11 +117,10 @@ const listPackage = async ({
     ])
   }
 
-  log(`[PackageList]`)
-  log(indentLine(padTable({
+  log(`[PackageList]\n${indentLine(padTable({
     table: [ [ 'name', 'local', 'server', '#', 'match' ], ...statusList ],
     padFuncList: [ 'L', 'R', 'L', 'R', 'R' ]
-  })))
+  }))}`)
 }
 
 const uploadPackage = async ({

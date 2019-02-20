@@ -1,7 +1,7 @@
 {
+  "directory": true,
   "list": true,
-  "packageJson": "./sample-package-gitignore/package.json",
-  "packageNameFilter": "@nundler/local",
   "urlPathAction": "http://localhost:18080/path-action",
+  "listKeyPrefix": "",
   "authFile": "./example-gitignore.key"
 }

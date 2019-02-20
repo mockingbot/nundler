@@ -21,29 +21,32 @@ runMain(async ({ padLog, log }) => {
   if (argvFlag('clear')) {
     padLog('clear example')
 
-    log('clear server-root')
-    await modify.delete(fromExample('server-root')).catch(() => {})
+    log('clear server-root-gitignore')
+    await modify.delete(fromExample('server-root-gitignore')).catch(() => {})
 
-    log('clear sample-package')
-    await modify.delete(fromExample('sample-package')).catch(() => {})
+    log('clear sample-package-gitignore')
+    await modify.delete(fromExample('sample-package-gitignore')).catch(() => {})
+
+    log('clear sample-directory-gitignore')
+    await modify.delete(fromExample('sample-directory-gitignore')).catch(() => {})
   }
 
   if (argvFlag('init')) {
     padLog('init example')
 
-    log('init server-root')
-    await createDirectory(fromExample('server-root/.nundler-gitignore'))
+    log('init server-root-gitignore')
+    await createDirectory(fromExample('server-root-gitignore/.nundler-gitignore'))
     for (const [ packageName, packagePath ] of SAMPLE_FILE_LIST) {
       writeFileSync(
-        fromExample('server-root', packagePath),
+        fromExample('server-root-gitignore', packagePath),
         packageName
       )
     }
 
-    log('init sample-package')
-    await createDirectory(fromExample('sample-package'))
+    log('init sample-package-gitignore')
+    await createDirectory(fromExample('sample-package-gitignore'))
     writeFileSync(
-      fromExample('sample-package/package.json'),
+      fromExample('sample-package-gitignore/package.json'),
       JSON.stringify({
         private: true,
         devDependencies: SAMPLE_FILE_LIST.reduce((o, [ packageName, packagePath ]) => {
@@ -51,6 +54,13 @@ runMain(async ({ padLog, log }) => {
           return o
         }, {})
       }, null, 2)
+    )
+
+    log('init sample-directory-gitignore')
+    await createDirectory(fromExample('sample-directory-gitignore'))
+    await modify.copy(
+      fromExample('sample-package-gitignore'),
+      fromExample('sample-directory-gitignore')
     )
   }
 }, getLogger(process.argv.slice(2).join('+'), argvFlag('quiet')))

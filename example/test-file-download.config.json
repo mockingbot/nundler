@@ -1,7 +1,7 @@
 {
   "download": true,
   "urlFileDownload": "http://localhost:18080/file-serve",
-  "downloadFile": "./server-root/test-download-gitignore/test-file",
-  "downloadKey": "test-upload-gitignore/test-file",
+  "downloadFile": "./server-root-gitignore/test-download/test-file",
+  "downloadKey": "test-upload/test-file",
   "authFile": "./example-gitignore.key"
 }

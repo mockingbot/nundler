@@ -1,6 +1,6 @@
 {
   "download": true,
-  "packageJson": "./sample-package/package.json",
+  "packageJson": "./sample-package-gitignore/package.json",
   "packageNameFilter": "@nundler/local",
   "urlFileDownload": "http://localhost:18080/file-serve",
   "authFile": "./example-gitignore.key"
