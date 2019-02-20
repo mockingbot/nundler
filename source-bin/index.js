@@ -23,27 +23,31 @@ const runMode = async (modeName, { tryGet, tryGetFirst, get, getFirst }) => {
     const pathPackageJSONList = get('package-json')
     const packageNameFilterList = get('package-name-filter')
     const packagePathPrefix = tryGetFirst('package-path-prefix') || ''
-    for (const packageList of pathPackageJSONList.map((pathPackageJSON) => loadPackageList({ pathPackageJSON, packageNameFilterList, packagePathPrefix, log }))) {
+    const packageListList = pathPackageJSONList.map((pathPackageJSON) => loadPackageList({ pathPackageJSON, packageNameFilterList, packagePathPrefix, log }))
+    for (const packageList of packageListList) {
       switch (modeName) {
         case 'list':
-          return listPackage({
-            urlPathAction: getFirst('url-path-action'),
+          await listPackage({
             packageList,
+            urlPathAction: getFirst('url-path-action'),
             ...commonOption
           })
+          break
         case 'upload':
-          return uploadPackage({
+          await uploadPackage({
+            packageList,
             urlFileUpload: getFirst('url-file-upload'),
             urlPathAction: getFirst('url-path-action'),
-            packageList,
             ...commonOption
           })
+          break
         case 'download':
-          return downloadPackage({
-            urlFileDownload: getFirst('url-file-download'),
+          await downloadPackage({
             packageList,
+            urlFileDownload: getFirst('url-file-download'),
             ...commonOption
           })
+          break
       }
     }
   } else {
