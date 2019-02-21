@@ -29,12 +29,14 @@ const cacheValue = (func) => {
 }
 const getGitBranchCached = cacheValue(() => getGitBranch() || 'unknown-branch')
 const getGitCommitHashCached = cacheValue(() => getGitCommitHash() || 'unknown-commit-hash')
+const getTimestampCached = cacheValue(getTimestamp)
+const getDateISOCached = cacheValue(() => new Date().toISOString())
 
 const dispelMagic = (key = '') => key
   .replace(/{git-branch}/g, getGitBranchCached)
   .replace(/{git-commit-hash}/g, getGitCommitHashCached)
-  .replace(/{timestamp}/g, cacheValue(getTimestamp))
-  .replace(/{date-iso}/g, cacheValue(() => new Date().toISOString()))
+  .replace(/{timestamp}/g, getTimestampCached)
+  .replace(/{date-iso}/g, getDateISOCached)
 
 const runMode = async (modeName, { tryGet, tryGetFirst, get, getFirst }) => {
   const timeout = tryGetFirst('timeout') || 0

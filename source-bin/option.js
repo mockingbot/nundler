@@ -65,7 +65,6 @@ const OPTION_CONFIG = {
     ...MODE_FORMAT_LIST
   ]
 }
-
 const { parseOption, formatUsage } = prepareOption(OPTION_CONFIG)
 
 export { MODE_NAME_LIST, parseOption, formatUsage }
