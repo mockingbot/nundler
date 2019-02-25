@@ -5,15 +5,17 @@
 * [Bin Option Format](#bin-option-format)
 
 #### Export Path
++ 📄 [source/directory.js](source/directory.js)
+  - `downloadDirectory`, `listDirectory`, `uploadDirectory`
 + 📄 [source/file.js](source/file.js)
   - `downloadFile`, `listFile`, `uploadFile`
 + 📄 [source/function.js](source/function.js)
-  - `PATH_ACTION_TYPE`, `fileDownload`, `fileUpload`, `getAuthFetch`, `getGitBranch`, `getGitCommitHash`, `pathAction`, `tarCompress`, `tarExtract`
+  - `PATH_ACTION_TYPE`, `dispelMagicString`, `fileDownload`, `fileUpload`, `getAuthFetch`, `getGitBranch`, `getGitCommitHash`, `pathAction`, `tarCompress`, `tarExtract`
 + 📄 [source/package.js](source/package.js)
   - `downloadPackage`, `listPackage`, `loadPackageList`, `uploadPackage`
 
 #### Export Tree
-- `downloadFile`, `listFile`, `uploadFile`, `PATH_ACTION_TYPE`, `fileDownload`, `fileUpload`, `getAuthFetch`, `getGitBranch`, `getGitCommitHash`, `pathAction`, `tarCompress`, `tarExtract`, `downloadPackage`, `listPackage`, `loadPackageList`, `uploadPackage`
+- `downloadDirectory`, `listDirectory`, `uploadDirectory`, `downloadFile`, `listFile`, `uploadFile`, `PATH_ACTION_TYPE`, `dispelMagicString`, `fileDownload`, `fileUpload`, `getAuthFetch`, `getGitBranch`, `getGitCommitHash`, `pathAction`, `tarCompress`, `tarExtract`, `downloadPackage`, `listPackage`, `loadPackageList`, `uploadPackage`
 
 #### Bin Option Format
 📄 [source-bin/option.js](source-bin/option.js)

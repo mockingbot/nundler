@@ -1,42 +1,15 @@
-import { resolve } from 'path'
-import { readFileSync, writeFileSync, unlinkSync } from 'fs'
-
 import { time } from 'dr-js/module/common/format'
-import { indentLine } from 'dr-js/module/common/string'
-import { clock, getTimestamp } from 'dr-js/module/common/time'
-import { getRandomId } from 'dr-js/module/common/math/random'
-import { createDirectory } from 'dr-js/module/node/file/File'
+import { clock } from 'dr-js/module/common/time'
 
 import {
-  getAuthFetch,
-  getGitBranch, getGitCommitHash,
-  tarCompress, tarExtract,
+  getAuthFetch, dispelMagicString,
   listFile, uploadFile, downloadFile,
+  uploadDirectory, downloadDirectory,
   loadPackageList, listPackage, uploadPackage, downloadPackage
 } from 'source'
 
 import { MODE_NAME_LIST, parseOption, formatUsage } from './option'
 import { name as packageName, version as packageVersion } from '../package.json'
-
-const FILE_PACK_INFO = 'PACK_INFO'
-
-const cacheValue = (func) => {
-  let value
-  return () => {
-    if (value === undefined) value = func()
-    return value
-  }
-}
-const getGitBranchCached = cacheValue(() => getGitBranch() || 'unknown-branch')
-const getGitCommitHashCached = cacheValue(() => getGitCommitHash() || 'unknown-commit-hash')
-const getTimestampCached = cacheValue(getTimestamp)
-const getDateISOCached = cacheValue(() => new Date().toISOString())
-
-const dispelMagic = (key = '') => key
-  .replace(/{git-branch}/g, getGitBranchCached)
-  .replace(/{git-commit-hash}/g, getGitCommitHashCached)
-  .replace(/{timestamp}/g, getTimestampCached)
-  .replace(/{date-iso}/g, getDateISOCached)
 
 const runMode = async (modeName, { tryGet, tryGetFirst, get, getFirst }) => {
   const timeout = tryGetFirst('timeout') || 0
@@ -52,7 +25,11 @@ const runMode = async (modeName, { tryGet, tryGetFirst, get, getFirst }) => {
   log(`[${packageName}@${packageVersion}] mode: ${modeName}, timeout: ${timeout}`)
 
   const commonOption = { timeout, authFetch, log }
-  if (tryGet('package-json')) {
+
+  const isPackageMode = tryGet('package-json')
+  const isDirectoryMode = tryGet('directory')
+
+  if (isPackageMode) {
     const pathPackageJSONList = get('package-json')
     const packageNameFilterList = get('package-name-filter')
     const packagePathPrefix = tryGetFirst('package-path-prefix') || ''
@@ -61,85 +38,64 @@ const runMode = async (modeName, { tryGet, tryGetFirst, get, getFirst }) => {
       switch (modeName) {
         case 'list':
           await listPackage({
-            packageList,
             urlPathAction: getFirst('url-path-action'),
+            packageList,
             ...commonOption
           })
           break
         case 'upload':
           await uploadPackage({
-            packageList,
             urlFileUpload: getFirst('url-file-upload'),
             urlPathAction: getFirst('url-path-action'),
+            packageList,
             ...commonOption
           })
           break
         case 'download':
           await downloadPackage({
-            packageList,
             urlFileDownload: getFirst('url-file-download'),
+            packageList,
             ...commonOption
           })
           break
       }
     }
-  } else {
-    const isDirectoryMode = tryGet('directory')
-    switch (modeName) {
-      case 'list':
-        return listFile({
-          urlPathAction: getFirst('url-path-action'),
-          listKeyPrefix: dispelMagic(tryGetFirst('list-key-prefix') || ''),
+    return
+  }
+
+  switch (modeName) {
+    case 'list':
+      return listFile({
+        urlPathAction: getFirst('url-path-action'),
+        listKeyPrefix: dispelMagicString(tryGetFirst('list-key-prefix') || ''),
+        ...commonOption
+      })
+    case 'upload': {
+      commonOption.urlFileUpload = getFirst('url-file-upload')
+      commonOption.filePath = dispelMagicString(getFirst('upload-key'))
+      return isDirectoryMode
+        ? uploadDirectory({
+          uploadDirectory: getFirst('upload-directory'),
+          infoString: dispelMagicString((tryGet('directory-pack-info') || [ '{date-iso}' ]).join('\n')),
           ...commonOption
         })
-      case 'upload': {
-        let fileBuffer
-        if (isDirectoryMode) {
-          const uploadDirectory = getFirst('upload-directory')
-          const infoString = dispelMagic((tryGet('directory-pack-info') || [ '{date-iso}' ]).join('\n'))
-          writeFileSync(resolve(uploadDirectory, FILE_PACK_INFO), infoString)
-          log(`[Upload] directory info:\n${indentLine(infoString)}`)
-
-          const tempTgz = resolve(`${getRandomId('temp-')}.tgz`) // just create the temp tgz in cwd
-          tarCompress(uploadDirectory, tempTgz)
-          fileBuffer = readFileSync(tempTgz)
-          unlinkSync(tempTgz)
-          log(`[Upload] done pack`)
-        } else fileBuffer = readFileSync(getFirst('upload-file'))
-
-        await uploadFile({
-          urlFileUpload: getFirst('url-file-upload'),
-          filePath: dispelMagic(getFirst('upload-key')),
-          fileBuffer,
+        : uploadFile({
+          fileInputPath: getFirst('upload-file'),
           ...commonOption
         })
-        break
-      }
-      case 'download': {
-        const fileOutputPath = isDirectoryMode
-          ? resolve(`${getRandomId('temp-')}.tgz`) // just create the temp tgz in cwd
-          : getFirst('download-file')
-
-        await downloadFile({
-          urlFileDownload: getFirst('url-file-download'),
-          filePath: dispelMagic(getFirst('download-key')),
-          fileOutputPath,
+    }
+    case 'download': {
+      commonOption.urlFileDownload = getFirst('url-file-download')
+      commonOption.filePath = dispelMagicString(getFirst('download-key'))
+      return isDirectoryMode
+        ? downloadDirectory({
+          downloadDirectory: getFirst('download-directory'),
           ...commonOption
         })
-
-        if (isDirectoryMode) {
-          const downloadDirectory = getFirst('download-directory')
-          await createDirectory(downloadDirectory)
-          const tempTgz = fileOutputPath
-          tarExtract(tempTgz, downloadDirectory)
-          unlinkSync(tempTgz)
-          log(`[Download] done unpack`)
-
-          const infoString = String(readFileSync(resolve(downloadDirectory, FILE_PACK_INFO)))
-          log(`[Download] directory info:\n${indentLine(infoString)}`)
-        }
-        break
-      }
+        : downloadFile({
+          fileOutputPath: getFirst('download-file'),
+          ...commonOption
+        })
     }
   }
 }
