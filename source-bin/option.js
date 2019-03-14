@@ -59,7 +59,8 @@ const OPTION_CONFIG = {
       ) ],
 
       [ 'directory,DIR/T,O|enable [DIRECTORY] mode, pack directory as .tgz file in server, require "tar" command', parseCompactList(
-        'directory-pack-info/AS,O|extra info to add to PACK_INFO for .tgz file, default to "{date-iso}"'
+        'directory-pack-info/AS,O|extra info to add to PACK_INFO for .tgz file, default to "{date-iso}"',
+        'trim-gz/T,O|delete .gz file with source on upload, re-generate .gz file on download'
       ) ]
     ),
     ...MODE_FORMAT_LIST

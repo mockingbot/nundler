@@ -29,6 +29,9 @@ runMain(async ({ padLog, log }) => {
 
     log('clear sample-directory-gitignore')
     await modify.delete(fromExample('sample-directory-gitignore')).catch(() => {})
+
+    log('clear sample-gz-directory-gitignore')
+    await modify.delete(fromExample('sample-directory-gz-gitignore')).catch(() => {})
   }
 
   if (argvFlag('init')) {
@@ -61,6 +64,17 @@ runMain(async ({ padLog, log }) => {
     await modify.copy(
       fromExample('sample-package-gitignore'),
       fromExample('sample-directory-gitignore')
+    )
+
+    log('init sample-gz-directory-gitignore')
+    await createDirectory(fromExample('sample-directory-gitignore'))
+    await modify.copy(
+      fromExample('sample-package-gitignore'),
+      fromExample('sample-gz-directory-gitignore')
+    )
+    await modify.copy(
+      fromExample('sample-gz-directory-gitignore/package.json'),
+      fromExample('sample-gz-directory-gitignore/package.json.gz') // fake gz file
     )
   }
 }, getLogger(process.argv.slice(2).join('+'), argvFlag('quiet')))

@@ -63,6 +63,7 @@ const runMode = async (modeName, { tryGet, tryGetFirst, get, getFirst }) => {
     return
   }
 
+  if (isDirectoryMode) commonOption.isTrimGz = tryGet('trim-gz')
   switch (modeName) {
     case 'list':
       return listFile({

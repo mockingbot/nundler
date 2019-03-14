@@ -1,4 +1,6 @@
 import { execSync, spawnSync } from 'child_process'
+import { readFileSync, writeFileSync } from 'fs'
+import { gzipSync } from 'zlib'
 
 import { getTimestamp } from 'dr-js/module/common/time'
 
@@ -26,20 +28,31 @@ const dispelMagicString = (string = '') => string
   .replace(/{timestamp}/g, getTimestampCached)
   .replace(/{date-iso}/g, getDateISOCached)
 
-const tarCompress = (sourcePath, outputFileName, stdio = 'inherit') => spawnSync('tar', [
-  '-czf', outputFileName,
+const SPAWN_CONFIG = { stdio: 'inherit', env: { ...process.env, GZIP: '-9' } }
+
+const tarCompress = (sourcePath, outputFileName) => spawnSync('tar', [
+  '-zcf', outputFileName, // TODO: use '-Jcf' for xz
   '-C', sourcePath,
   '.'
-], { stdio, env: { ...process.env, GZIP: '-9' } })
-const tarExtract = (sourceFileName, outputPath, stdio = 'inherit') => spawnSync('tar', [
+], SPAWN_CONFIG)
+
+const tarExtract = (sourceFileName, outputPath) => spawnSync('tar', [
   '--strip-components', '1',
-  '-xzf', sourceFileName,
+  '-zxf', sourceFileName, // TODO: use '-Jxf' for xz
   '-C', outputPath
-], { stdio })
+], SPAWN_CONFIG)
+
+const gzipFile = (sourceFile) => writeFileSync(
+  `${sourceFile}.gz`,
+  gzipSync(
+    readFileSync(sourceFile),
+    { level: 9 }
+  )
+)
 
 export {
   PATH_ACTION_TYPE, getAuthFetch, pathAction, fileUpload, fileDownload,
   getGitBranch, getGitCommitHash,
   dispelMagicString,
-  tarCompress, tarExtract
+  tarCompress, tarExtract, gzipFile
 }

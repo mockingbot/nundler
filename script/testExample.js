@@ -176,6 +176,38 @@ runMain(async ({ padLog, stepLog }) => {
       notStrictEqual(statDownload.mtimeMs, statDownloadAgain.mtimeMs, '[directory-download] should update directory mtimeMs')
     })
 
+    const gzDirectoryPackFile = `test-gz-directory-${getGitBranch()}-${getGitCommitHash()}.tgz`
+    await runTest('gz-directory-list', async () => {
+      const listOutputString = await runWithOutputString('npm run example-gz-directory-list')
+      stringifyEqual([
+        listOutputString.includes('.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'),
+        listOutputString.includes('.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'),
+        listOutputString.includes('.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
+      ], [ true, true, true ], '[gz-directory-list] should list expected path')
+    })
+    await runTest('gz-directory-upload', async () => {
+      await runWithOutputString('npm run example-gz-directory-upload')
+      await verifyExampleFileExist('upload', `server-root-gitignore/test-upload/${gzDirectoryPackFile}`)
+    })
+    await runTest('gz-directory-upload (should rewrite)', async () => {
+      const statUpload = await getExampleFileStat(`server-root-gitignore/test-upload/${gzDirectoryPackFile}`)
+      await runWithOutputString('npm run example-gz-directory-upload')
+      const statUploadAgain = await getExampleFileStat(`server-root-gitignore/test-upload/${gzDirectoryPackFile}`)
+      notStrictEqual(statUpload.mtimeMs, statUploadAgain.mtimeMs, '[gz-directory-upload] should upload directory mtimeMs')
+    })
+    await runTest('gz-directory-download', async () => {
+      await runWithOutputString('npm run example-gz-directory-download')
+      await verifyExampleFileExist('download', `server-root-gitignore/test-gz-download/test-directory`)
+      await verifyExampleFileExist('download', `server-root-gitignore/test-gz-download/test-directory/PACK_TRIM_GZ`)
+      await verifyExampleFileExist('download', `server-root-gitignore/test-gz-download/test-directory/package.json.gz`)
+    })
+    await runTest('gz-directory-download (should rewrite)', async () => {
+      const statDownload = await getExampleFileStat(`server-root-gitignore/test-gz-download/test-directory`)
+      await runWithOutputString('npm run example-gz-directory-download')
+      const statDownloadAgain = await getExampleFileStat(`server-root-gitignore/test-gz-download/test-directory`)
+      notStrictEqual(statDownload.mtimeMs, statDownloadAgain.mtimeMs, '[gz-directory-download] should update directory mtimeMs')
+    })
+
     padLog('stop example server')
   })
   stepLog('stop example server done')

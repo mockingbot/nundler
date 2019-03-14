@@ -1,0 +1,7 @@
+{
+  "directory": true,
+  "list": true,
+  "urlPathAction": "http://localhost:18080/path-action",
+  "listKeyPrefix": "",
+  "authFile": "./example-gitignore.key"
+}

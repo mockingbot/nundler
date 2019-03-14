@@ -1,0 +1,16 @@
+{
+  "directory": true,
+  "directoryPackInfo": [
+    "{git-branch}",
+    "{git-commit-hash}",
+    "{date-iso}",
+    "some random note {git-branch} {git-commit-hash} {date-iso}",
+    "some other random note {git-branch} {git-commit-hash} {date-iso}"
+  ],
+  "trimGz": true,
+  "upload": true,
+  "urlFileUpload": "http://localhost:18080/file-chunk-upload",
+  "uploadDirectory": "./sample-gz-directory-gitignore",
+  "uploadKey": "test-upload/test-gz-directory-{git-branch}-{git-commit-hash}.tgz",
+  "authFile": "./example-gitignore.key"
+}

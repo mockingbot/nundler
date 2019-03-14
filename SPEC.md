@@ -6,16 +6,16 @@
 
 #### Export Path
 + 📄 [source/directory.js](source/directory.js)
-  - `downloadDirectory`, `listDirectory`, `uploadDirectory`
+  - `downloadDirectory`, `uploadDirectory`
 + 📄 [source/file.js](source/file.js)
   - `downloadFile`, `listFile`, `uploadFile`
 + 📄 [source/function.js](source/function.js)
-  - `PATH_ACTION_TYPE`, `dispelMagicString`, `fileDownload`, `fileUpload`, `getAuthFetch`, `getGitBranch`, `getGitCommitHash`, `pathAction`, `tarCompress`, `tarExtract`
+  - `PATH_ACTION_TYPE`, `dispelMagicString`, `fileDownload`, `fileUpload`, `getAuthFetch`, `getGitBranch`, `getGitCommitHash`, `gzipFile`, `pathAction`, `tarCompress`, `tarExtract`
 + 📄 [source/package.js](source/package.js)
   - `downloadPackage`, `listPackage`, `loadPackageList`, `uploadPackage`
 
 #### Export Tree
-- `downloadDirectory`, `listDirectory`, `uploadDirectory`, `downloadFile`, `listFile`, `uploadFile`, `PATH_ACTION_TYPE`, `dispelMagicString`, `fileDownload`, `fileUpload`, `getAuthFetch`, `getGitBranch`, `getGitCommitHash`, `pathAction`, `tarCompress`, `tarExtract`, `downloadPackage`, `listPackage`, `loadPackageList`, `uploadPackage`
+- `downloadDirectory`, `uploadDirectory`, `downloadFile`, `listFile`, `uploadFile`, `PATH_ACTION_TYPE`, `dispelMagicString`, `fileDownload`, `fileUpload`, `getAuthFetch`, `getGitBranch`, `getGitCommitHash`, `gzipFile`, `pathAction`, `tarCompress`, `tarExtract`, `downloadPackage`, `listPackage`, `loadPackageList`, `uploadPackage`
 
 #### Bin Option Format
 📄 [source-bin/option.js](source-bin/option.js)
@@ -48,6 +48,8 @@
 >       enable [DIRECTORY] mode, pack directory as .tgz file in server, require "tar" command
 >     --directory-pack-info [OPTIONAL-CHECK] [ARGUMENT=1+]
 >         extra info to add to PACK_INFO for .tgz file, default to "{date-iso}"
+>     --trim-gz [OPTIONAL-CHECK] [ARGUMENT=0+]
+>         delete .gz file with source on upload, re-generate .gz file on download
 >   --list --L -L [OPTIONAL] [ARGUMENT=0+]
 >       [FILE] list path on server
 >       [PACKAGE] list local/server package version, like "npm outdated"
@@ -93,6 +95,7 @@
 >     export NUNDLER_PACKAGE_PATH_PREFIX="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export NUNDLER_DIRECTORY="[OPTIONAL] [ARGUMENT=0+]"
 >     export NUNDLER_DIRECTORY_PACK_INFO="[OPTIONAL-CHECK] [ARGUMENT=1+]"
+>     export NUNDLER_TRIM_GZ="[OPTIONAL-CHECK] [ARGUMENT=0+]"
 >     export NUNDLER_LIST="[OPTIONAL] [ARGUMENT=0+]"
 >     export NUNDLER_URL_PATH_ACTION="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export NUNDLER_LIST_KEY_PREFIX="[OPTIONAL-CHECK] [ARGUMENT=1]"
@@ -122,6 +125,7 @@
 >     "packagePathPrefix": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "directory": [ "[OPTIONAL] [ARGUMENT=0+]" ],
 >     "directoryPackInfo": [ "[OPTIONAL-CHECK] [ARGUMENT=1+]" ],
+>     "trimGz": [ "[OPTIONAL-CHECK] [ARGUMENT=0+]" ],
 >     "list": [ "[OPTIONAL] [ARGUMENT=0+]" ],
 >     "urlPathAction": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "listKeyPrefix": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],

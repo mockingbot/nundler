@@ -1,9 +1,10 @@
-import { readFileSync } from 'fs'
 import { join, resolve, normalize, dirname, basename } from 'path'
+import { readFileSync } from 'fs'
 
 import { padTable } from 'dr-js/module/common/format'
 import { indentLine } from 'dr-js/module/common/string'
 import { compareSemVer } from 'dr-js/module/common/module/SemVer'
+
 import { visibleAsync, toPosixPath } from 'dr-js/module/node/file/function'
 import { modify } from 'dr-js/module/node/file/Modify'
 
