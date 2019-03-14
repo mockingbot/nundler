@@ -41,6 +41,9 @@ runMain(async (logger) => {
   let sizeReduce = 0
   sizeReduce += await minifyFileListWithTerser({ fileList, option: getTerserOption(), rootPath: PATH_OUTPUT, logger })
   sizeReduce += await processFileList({ fileList, processor: fileProcessorBabel, rootPath: PATH_OUTPUT, logger })
+  // again
+  sizeReduce += await minifyFileListWithTerser({ fileList, option: getTerserOption(), rootPath: PATH_OUTPUT, logger })
+  sizeReduce += await processFileList({ fileList, processor: fileProcessorBabel, rootPath: PATH_OUTPUT, logger })
   padLog(`library-babel size reduce: ${formatBinary(sizeReduce)}B`)
 
   await verifyOutputBinVersion({ fromOutput, packageJSON, logger })

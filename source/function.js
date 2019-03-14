@@ -38,7 +38,7 @@ const tarCompress = (sourcePath, outputFileName) => spawnSync('tar', [
 
 const tarExtract = (sourceFileName, outputPath) => spawnSync('tar', [
   '--strip-components', '1',
-  '-zxf', sourceFileName, // TODO: use '-Jxf' for xz
+  '-xf', sourceFileName, // use '-xf' for both gzip/xz
   '-C', outputPath
 ], SPAWN_CONFIG)
 

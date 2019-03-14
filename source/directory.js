@@ -49,7 +49,7 @@ const uploadDirectory = async ({
   await deletePath(tempTgz)
   log(`[Upload] done pack`)
 
-  return uploadFile({ fileBuffer, log, ...fileOption })
+  return uploadFile({ ...fileOption, log, fileBuffer })
 }
 
 const downloadDirectory = async ({
@@ -59,7 +59,7 @@ const downloadDirectory = async ({
   ...fileOption
 }) => {
   const tempTgz = resolve(`${getRandomId('temp-')}.tgz`) // just create the temp tgz in cwd
-  await downloadFile({ ...fileOption, fileOutputPath: tempTgz })
+  await downloadFile({ ...fileOption, log, fileOutputPath: tempTgz })
 
   await createDirectory(downloadDirectory)
   tarExtract(tempTgz, downloadDirectory)
