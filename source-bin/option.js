@@ -2,7 +2,7 @@ import { Preset, getOptionalFormatFlag, prepareOption } from 'dr-js/module/node/
 
 const { Config, parseCompactList } = Preset
 
-const FILE_DIRECTORY_KEY_DESCRIPTION = 'for [FILE/DIRECTORY] mode, recommend use .tgz for directory pack'
+const FILE_DIRECTORY_KEY_DESCRIPTION = 'for [FILE/DIRECTORY] mode, recommend use .tgz/.7z for directory pack'
 
 const getDescription = (fileDesc, packageDesc, directoryDesc = fileDesc) => `[FILE] ${fileDesc}\n[PACKAGE] ${packageDesc}\n[DIRECTORY] ${directoryDesc}`
 
@@ -17,7 +17,7 @@ const MODE_FORMAT_LIST = parseCompactList(
   [ `upload,U/T|${getDescription(
     'upload file to server, overwrite',
     'upload package to server, skip server existing, need also set "url-path-action"',
-    'pack & upload directory to server, as .tgz file, overwrite'
+    'pack & upload directory to server, as .tgz/.7z file, overwrite'
   )}`, parseCompactList(
     'url-file-upload/SS',
     [ `upload-key/SS,O|${FILE_DIRECTORY_KEY_DESCRIPTION}`, parseCompactList(
@@ -58,9 +58,10 @@ const OPTION_CONFIG = {
         'package-path-prefix/SS,O|String will prefix server package key'
       ) ],
 
-      [ 'directory,DIR/T,O|enable [DIRECTORY] mode, pack directory as .tgz file in server, require "tar" command', parseCompactList(
-        'directory-pack-info/AS,O|extra info to add to PACK_INFO for .tgz file, default to "{date-iso}"',
-        'trim-gz/T,O|delete .gz file with source on upload, re-generate .gz file on download'
+      [ 'directory,DIR/T,O|enable [DIRECTORY] mode, pack directory as .tgz/.7z file in server, require "tar" command', parseCompactList(
+        'directory-pack-info/AS,O|extra info to add to PACK_INFO for .tgz/.7z file, default to "{date-iso}"',
+        'trim-gz/T,O|delete .gz file with source on upload, re-generate .gz file on download',
+        'use-7z/T,O|use .7z instead of .tgz for file pack, require "7z" command'
       ) ]
     ),
     ...MODE_FORMAT_LIST

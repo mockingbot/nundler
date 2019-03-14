@@ -13,6 +13,10 @@ jobs:
       - checkout
 
       - run:
+          name: <Setup> apt
+          command: sudo apt install p7zip-full
+
+      - run:
           name: <Setup> javascript
           command: npm ci
 

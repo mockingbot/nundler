@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "nundler",
-  "version": "0.0.3-dev.10",
+  "version": "0.0.3-dev.11",
   "description": "Not bundler",
   "author": "mockingbot",
   "license": "MIT",
@@ -32,6 +32,9 @@
     "example-gz-directory-list": "node output-gitignore/bin -c example/test-gz-directory-list.config.json",
     "example-gz-directory-upload": "node output-gitignore/bin -c example/test-gz-directory-upload.config.json",
     "example-gz-directory-download": "node output-gitignore/bin -c example/test-gz-directory-download.config.json",
+    "example-7z-directory-list": "node output-gitignore/bin -c example/test-7z-directory-list.config.json",
+    "example-7z-directory-upload": "node output-gitignore/bin -c example/test-7z-directory-upload.config.json",
+    "example-7z-directory-download": "node output-gitignore/bin -c example/test-7z-directory-download.config.json",
     "example-package-list": "node output-gitignore/bin -c example/test-package-list.config.json",
     "example-package-upload": "node output-gitignore/bin -c example/test-package-upload.config.json",
     "example-package-download": "node output-gitignore/bin -c example/test-package-download.config.json",

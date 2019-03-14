@@ -141,3 +141,13 @@ npm run example-package-download
 
 - require edit `preinstall` script
 - require use package `path` instead of `version` in `package.json`
+
+
+#### 7zip install
+
+should be able to run `7z`
+
+- Windows: [download](https://www.7-zip.org/), install & add to PATH
+- Ubuntu/Debian: `sudo apt install p7zip-full`
+- Fedora: `sudo yum install p7zip p7zip-plugins`
+- OSX: `brew install p7zip`

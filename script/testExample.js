@@ -208,6 +208,36 @@ runMain(async ({ padLog, stepLog }) => {
       notStrictEqual(statDownload.mtimeMs, statDownloadAgain.mtimeMs, '[gz-directory-download] should update directory mtimeMs')
     })
 
+    const p7zDirectoryPackFile = `test-7z-directory-${getGitBranch()}-${getGitCommitHash()}.7z`
+    await runTest('7z-directory-list', async () => {
+      const listOutputString = await runWithOutputString('npm run example-7z-directory-list')
+      stringifyEqual([
+        listOutputString.includes('.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'),
+        listOutputString.includes('.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'),
+        listOutputString.includes('.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
+      ], [ true, true, true ], '[7z-directory-list] should list expected path')
+    })
+    await runTest('7z-directory-upload', async () => {
+      await runWithOutputString('npm run example-7z-directory-upload')
+      await verifyExampleFileExist('upload', `server-root-gitignore/test-upload/${p7zDirectoryPackFile}`)
+    })
+    await runTest('7z-directory-upload (should rewrite)', async () => {
+      const statUpload = await getExampleFileStat(`server-root-gitignore/test-upload/${p7zDirectoryPackFile}`)
+      await runWithOutputString('npm run example-7z-directory-upload')
+      const statUploadAgain = await getExampleFileStat(`server-root-gitignore/test-upload/${p7zDirectoryPackFile}`)
+      notStrictEqual(statUpload.mtimeMs, statUploadAgain.mtimeMs, '[7z-directory-upload] should upload directory mtimeMs')
+    })
+    await runTest('7z-directory-download', async () => {
+      await runWithOutputString('npm run example-7z-directory-download')
+      await verifyExampleFileExist('download', `server-root-gitignore/test-7z-download/test-directory`)
+    })
+    await runTest('7z-directory-download (should rewrite)', async () => {
+      const statDownload = await getExampleFileStat(`server-root-gitignore/test-7z-download/test-directory`)
+      await runWithOutputString('npm run example-7z-directory-download')
+      const statDownloadAgain = await getExampleFileStat(`server-root-gitignore/test-7z-download/test-directory`)
+      notStrictEqual(statDownload.mtimeMs, statDownloadAgain.mtimeMs, '[7z-directory-download] should update directory mtimeMs')
+    })
+
     padLog('stop example server')
   })
   stepLog('stop example server done')

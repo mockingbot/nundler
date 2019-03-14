@@ -1,4 +1,5 @@
 import { execSync, spawnSync } from 'child_process'
+import { sep } from 'path'
 import { readFileSync, writeFileSync } from 'fs'
 import { gzipSync } from 'zlib'
 
@@ -42,6 +43,17 @@ const tarExtract = (sourceFileName, outputPath) => spawnSync('tar', [
   '-C', outputPath
 ], SPAWN_CONFIG)
 
+const p7zCompress = (sourcePath, outputFileName) => spawnSync('7z', [
+  'a', outputFileName,
+  `${sourcePath}${sep}*`
+], SPAWN_CONFIG)
+
+const p7zExtract = (sourceFileName, outputPath) => spawnSync('7z', [
+  'x', sourceFileName,
+  '-y',
+  `-o${outputPath}`
+], SPAWN_CONFIG)
+
 const gzipFile = (sourceFile) => writeFileSync(
   `${sourceFile}.gz`,
   gzipSync(
@@ -54,5 +66,7 @@ export {
   PATH_ACTION_TYPE, getAuthFetch, pathAction, fileUpload, fileDownload,
   getGitBranch, getGitCommitHash,
   dispelMagicString,
-  tarCompress, tarExtract, gzipFile
+  tarCompress, tarExtract,
+  p7zCompress, p7zExtract,
+  gzipFile
 }

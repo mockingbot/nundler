@@ -8,17 +8,19 @@ import { createDirectory, deletePath } from 'dr-js/module/node/file/File'
 import { getFileList } from 'dr-js/module/node/file/Directory'
 
 import { uploadFile, downloadFile } from './file'
-import { tarCompress, tarExtract, gzipFile } from './function'
+import { tarCompress, tarExtract, p7zCompress, p7zExtract, gzipFile } from './function'
 
 const FILE_PACK_INFO = 'PACK_INFO'
 const FILE_PACK_TRIM_GZ = 'PACK_TRIM_GZ'
 
 const dropGz = (fileGz) => fileGz.slice(0, -3) // drop last 3 char (.gz)
+const getTempFile = () => resolve(`${getRandomId('temp-')}.pack`) // just create temp file in cwd
 
 const uploadDirectory = async ({
   uploadDirectory,
   infoString,
   isTrimGz,
+  isUse7z,
   log,
   ...fileOption
 }) => {
@@ -43,10 +45,11 @@ const uploadDirectory = async ({
     }
   }
 
-  const tempTgz = resolve(`${getRandomId('temp-')}.tgz`) // just create the temp tgz in cwd
-  tarCompress(uploadDirectory, tempTgz)
-  const fileBuffer = await readFileAsync(tempTgz)
-  await deletePath(tempTgz)
+  const tempFile = getTempFile()
+  const compress = isUse7z ? p7zCompress : tarCompress
+  compress(uploadDirectory, tempFile)
+  const fileBuffer = await readFileAsync(tempFile)
+  await deletePath(tempFile)
   log(`[Upload] done pack`)
 
   return uploadFile({ ...fileOption, log, fileBuffer })
@@ -55,15 +58,17 @@ const uploadDirectory = async ({
 const downloadDirectory = async ({
   downloadDirectory,
   isTrimGz,
+  isUse7z,
   log,
   ...fileOption
 }) => {
-  const tempTgz = resolve(`${getRandomId('temp-')}.tgz`) // just create the temp tgz in cwd
-  await downloadFile({ ...fileOption, log, fileOutputPath: tempTgz })
+  const tempFile = getTempFile()
+  await downloadFile({ ...fileOption, log, fileOutputPath: tempFile })
 
   await createDirectory(downloadDirectory)
-  tarExtract(tempTgz, downloadDirectory)
-  await deletePath(tempTgz)
+  const extract = isUse7z ? p7zExtract : tarExtract
+  extract(tempFile, downloadDirectory)
+  await deletePath(tempFile)
   log(`[Download] done unpack`)
 
   if (isTrimGz) {

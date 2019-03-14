@@ -10,12 +10,12 @@
 + 📄 [source/file.js](source/file.js)
   - `downloadFile`, `listFile`, `uploadFile`
 + 📄 [source/function.js](source/function.js)
-  - `PATH_ACTION_TYPE`, `dispelMagicString`, `fileDownload`, `fileUpload`, `getAuthFetch`, `getGitBranch`, `getGitCommitHash`, `gzipFile`, `pathAction`, `tarCompress`, `tarExtract`
+  - `PATH_ACTION_TYPE`, `dispelMagicString`, `fileDownload`, `fileUpload`, `getAuthFetch`, `getGitBranch`, `getGitCommitHash`, `gzipFile`, `p7zCompress`, `p7zExtract`, `pathAction`, `tarCompress`, `tarExtract`
 + 📄 [source/package.js](source/package.js)
   - `downloadPackage`, `listPackage`, `loadPackageList`, `uploadPackage`
 
 #### Export Tree
-- `downloadDirectory`, `uploadDirectory`, `downloadFile`, `listFile`, `uploadFile`, `PATH_ACTION_TYPE`, `dispelMagicString`, `fileDownload`, `fileUpload`, `getAuthFetch`, `getGitBranch`, `getGitCommitHash`, `gzipFile`, `pathAction`, `tarCompress`, `tarExtract`, `downloadPackage`, `listPackage`, `loadPackageList`, `uploadPackage`
+- `downloadDirectory`, `uploadDirectory`, `downloadFile`, `listFile`, `uploadFile`, `PATH_ACTION_TYPE`, `dispelMagicString`, `fileDownload`, `fileUpload`, `getAuthFetch`, `getGitBranch`, `getGitCommitHash`, `gzipFile`, `p7zCompress`, `p7zExtract`, `pathAction`, `tarCompress`, `tarExtract`, `downloadPackage`, `listPackage`, `loadPackageList`, `uploadPackage`
 
 #### Bin Option Format
 📄 [source-bin/option.js](source-bin/option.js)
@@ -45,11 +45,13 @@
 >     --package-path-prefix [OPTIONAL-CHECK] [ARGUMENT=1]
 >         String will prefix server package key
 >   --directory --DIR [OPTIONAL] [ARGUMENT=0+]
->       enable [DIRECTORY] mode, pack directory as .tgz file in server, require "tar" command
+>       enable [DIRECTORY] mode, pack directory as .tgz/.7z file in server, require "tar" command
 >     --directory-pack-info [OPTIONAL-CHECK] [ARGUMENT=1+]
->         extra info to add to PACK_INFO for .tgz file, default to "{date-iso}"
+>         extra info to add to PACK_INFO for .tgz/.7z file, default to "{date-iso}"
 >     --trim-gz [OPTIONAL-CHECK] [ARGUMENT=0+]
 >         delete .gz file with source on upload, re-generate .gz file on download
+>     --use-7z [OPTIONAL-CHECK] [ARGUMENT=0+]
+>         use .7z instead of .tgz for file pack, require "7z" command
 >   --list --L -L [OPTIONAL] [ARGUMENT=0+]
 >       [FILE] list path on server
 >       [PACKAGE] list local/server package version, like "npm outdated"
@@ -60,10 +62,10 @@
 >   --upload --U -U [OPTIONAL] [ARGUMENT=0+]
 >       [FILE] upload file to server, overwrite
 >       [PACKAGE] upload package to server, skip server existing, need also set "url-path-action"
->       [DIRECTORY] pack & upload directory to server, as .tgz file, overwrite
+>       [DIRECTORY] pack & upload directory to server, as .tgz/.7z file, overwrite
 >     --url-file-upload [OPTIONAL-CHECK] [ARGUMENT=1]
 >     --upload-key [OPTIONAL-CHECK] [ARGUMENT=1]
->         for [FILE/DIRECTORY] mode, recommend use .tgz for directory pack
+>         for [FILE/DIRECTORY] mode, recommend use .tgz/.7z for directory pack
 >       --upload-file [OPTIONAL-CHECK] [ARGUMENT=1]
 >           for [FILE] mode
 >       --upload-directory [OPTIONAL-CHECK] [ARGUMENT=1]
@@ -74,7 +76,7 @@
 >       [DIRECTORY] download & unpack directory from server
 >     --url-file-download [OPTIONAL-CHECK] [ARGUMENT=1]
 >     --download-key [OPTIONAL-CHECK] [ARGUMENT=1]
->         for [FILE/DIRECTORY] mode, recommend use .tgz for directory pack
+>         for [FILE/DIRECTORY] mode, recommend use .tgz/.7z for directory pack
 >       --download-file [OPTIONAL-CHECK] [ARGUMENT=1]
 >           for [FILE] mode
 >       --download-directory [OPTIONAL-CHECK] [ARGUMENT=1]
@@ -96,6 +98,7 @@
 >     export NUNDLER_DIRECTORY="[OPTIONAL] [ARGUMENT=0+]"
 >     export NUNDLER_DIRECTORY_PACK_INFO="[OPTIONAL-CHECK] [ARGUMENT=1+]"
 >     export NUNDLER_TRIM_GZ="[OPTIONAL-CHECK] [ARGUMENT=0+]"
+>     export NUNDLER_USE_7Z="[OPTIONAL-CHECK] [ARGUMENT=0+]"
 >     export NUNDLER_LIST="[OPTIONAL] [ARGUMENT=0+]"
 >     export NUNDLER_URL_PATH_ACTION="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export NUNDLER_LIST_KEY_PREFIX="[OPTIONAL-CHECK] [ARGUMENT=1]"
@@ -126,6 +129,7 @@
 >     "directory": [ "[OPTIONAL] [ARGUMENT=0+]" ],
 >     "directoryPackInfo": [ "[OPTIONAL-CHECK] [ARGUMENT=1+]" ],
 >     "trimGz": [ "[OPTIONAL-CHECK] [ARGUMENT=0+]" ],
+>     "use7z": [ "[OPTIONAL-CHECK] [ARGUMENT=0+]" ],
 >     "list": [ "[OPTIONAL] [ARGUMENT=0+]" ],
 >     "urlPathAction": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "listKeyPrefix": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],

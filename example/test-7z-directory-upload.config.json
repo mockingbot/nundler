@@ -1,0 +1,16 @@
+{
+  "directory": true,
+  "directoryPackInfo": [
+    "{git-branch}",
+    "{git-commit-hash}",
+    "{date-iso}",
+    "some random note {git-branch} {git-commit-hash} {date-iso}",
+    "some other random note {git-branch} {git-commit-hash} {date-iso}"
+  ],
+  "use7z": true,
+  "upload": true,
+  "urlFileUpload": "http://localhost:18080/file-chunk-upload",
+  "uploadDirectory": "./sample-7z-directory-gitignore",
+  "uploadKey": "test-upload/test-7z-directory-{git-branch}-{git-commit-hash}.7z",
+  "authFile": "./example-gitignore.key"
+}
