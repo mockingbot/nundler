@@ -32,7 +32,7 @@ const dispelMagicString = (string = '') => string
 const SPAWN_CONFIG = { stdio: 'inherit', env: { ...process.env, GZIP: '-9' } }
 
 const tarCompress = (sourcePath, outputFileName) => spawnSync('tar', [
-  '-zcf', outputFileName, // TODO: use '-Jcf' for xz
+  '-zcf', outputFileName,
   '-C', sourcePath,
   '.'
 ], SPAWN_CONFIG)
@@ -43,15 +43,17 @@ const tarExtract = (sourceFileName, outputPath) => spawnSync('tar', [
   '-C', outputPath
 ], SPAWN_CONFIG)
 
+// require 7z@>=16.00 for `-bs` switch
 const p7zCompress = (sourcePath, outputFileName) => spawnSync('7z', [
   'a', outputFileName,
-  `${sourcePath}${sep}*`
+  `${sourcePath}${sep}*`,
+  '-bso0', '-bsp0'
 ], SPAWN_CONFIG)
 
 const p7zExtract = (sourceFileName, outputPath) => spawnSync('7z', [
   'x', sourceFileName,
-  '-y',
-  `-o${outputPath}`
+  `-o${outputPath}`,
+  '-y', '-bso0', '-bsp0'
 ], SPAWN_CONFIG)
 
 const gzipFile = (sourceFile) => writeFileSync(

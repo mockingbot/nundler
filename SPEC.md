@@ -51,7 +51,7 @@
 >     --trim-gz [OPTIONAL-CHECK] [ARGUMENT=0+]
 >         delete .gz file with source on upload, re-generate .gz file on download
 >     --use-7z [OPTIONAL-CHECK] [ARGUMENT=0+]
->         use .7z instead of .tgz for file pack, require "7z" command
+>         use .7z instead of .tgz for file pack, require "7z@>=16.00" command
 >   --list --L -L [OPTIONAL] [ARGUMENT=0+]
 >       [FILE] list path on server
 >       [PACKAGE] list local/server package version, like "npm outdated"

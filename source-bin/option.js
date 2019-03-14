@@ -61,7 +61,7 @@ const OPTION_CONFIG = {
       [ 'directory,DIR/T,O|enable [DIRECTORY] mode, pack directory as .tgz/.7z file in server, require "tar" command', parseCompactList(
         'directory-pack-info/AS,O|extra info to add to PACK_INFO for .tgz/.7z file, default to "{date-iso}"',
         'trim-gz/T,O|delete .gz file with source on upload, re-generate .gz file on download',
-        'use-7z/T,O|use .7z instead of .tgz for file pack, require "7z" command'
+        'use-7z/T,O|use .7z instead of .tgz for file pack, require "7z@>=16.00" command'
       ) ]
     ),
     ...MODE_FORMAT_LIST
