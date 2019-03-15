@@ -150,4 +150,4 @@ should be able to run `7z@>=16.00`
 - Windows: [download](https://www.7-zip.org/), install & add to PATH
 - Ubuntu/Debian: `sudo apt install p7zip-full` or dpkg + deb: [p7zip-full](https://packages.debian.org/sid/p7zip-full) [p7zip](https://packages.debian.org/sid/p7zip)
 - Fedora: `sudo yum install p7zip p7zip-plugins`
-- OSX: `brew install p7zip`
+- OSX: `HOMEBREW_NO_AUTO_UPDATE=1 brew install p7zip`

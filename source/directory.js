@@ -8,7 +8,7 @@ import { createDirectory, deletePath } from 'dr-js/module/node/file/File'
 import { getFileList } from 'dr-js/module/node/file/Directory'
 
 import { uploadFile, downloadFile } from './file'
-import { tarCompress, tarExtract, p7zCompress, p7zExtract, gzipFile } from './function'
+import { tarCompress, tarExtract, p7zCompress, p7zExtract, p7zDetect, gzipFile } from './function'
 
 const FILE_PACK_INFO = 'PACK_INFO'
 const FILE_PACK_TRIM_GZ = 'PACK_TRIM_GZ'
@@ -24,6 +24,8 @@ const uploadDirectory = async ({
   log,
   ...fileOption
 }) => {
+  isUse7z && p7zDetect()
+
   await writeFileAsync(resolve(uploadDirectory, FILE_PACK_INFO), infoString)
   log(`[Upload] directory info:\n${indentLine(infoString)}`)
 
@@ -62,6 +64,8 @@ const downloadDirectory = async ({
   log,
   ...fileOption
 }) => {
+  isUse7z && p7zDetect()
+
   const tempFile = getTempFile()
   await downloadFile({ ...fileOption, log, fileOutputPath: tempFile })
 
@@ -84,6 +88,7 @@ const downloadDirectory = async ({
 }
 
 export {
+  // FILE_PACK_INFO, FILE_PACK_TRIM_GZ,
   uploadDirectory,
   downloadDirectory
 }

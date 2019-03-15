@@ -6,9 +6,8 @@ import { visibleAsync, statAsync } from 'dr-js/module/node/file/function'
 import { modify } from 'dr-js/module/node/file/Modify'
 import { runQuiet } from 'dr-js/module/node/system/Run'
 
-import { argvFlag, runMain } from 'dr-dev/module/main'
-import { getLogger } from 'dr-dev/module/logger'
-import { withRunBackground } from 'dr-dev/module/exec'
+import { withRunBackground } from 'dr-dev/module/node/run'
+import { runMain, argvFlag } from 'dr-dev/module/main'
 
 import { getGitBranch, getGitCommitHash } from '../output-gitignore/library'
 
@@ -241,4 +240,4 @@ runMain(async ({ padLog, stepLog }) => {
     padLog('stop example server')
   })
   stepLog('stop example server done')
-}, getLogger([ 'test-example', ...process.argv.slice(2) ].join('+'), argvFlag('quiet')))
+}, [ 'test-example', ...process.argv.slice(2) ].join('+'))

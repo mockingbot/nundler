@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "nundler",
-  "version": "0.0.3-dev.12",
+  "version": "0.0.3-dev.13",
   "description": "Not bundler",
   "author": "mockingbot",
   "license": "MIT",
@@ -48,13 +48,13 @@
     "prepack": "echo \"Error: pack with script-*\" && exit 1"
   },
   "engines": {
-    "node": ">=10.12",
+    "node": ">=10.15",
     "npm": ">=6"
   },
   "devDependencies": {
-    "dr-dev": "0.0.4",
-    "dr-dev-web": "0.0.4",
-    "dr-js": "^0.20.3",
-    "dr-server": "^0.0.32"
+    "dr-dev": "0.0.5-dev.2",
+    "dr-dev-web": "0.0.5-dev.2",
+    "dr-js": "0.21.0-dev.1",
+    "dr-server": "0.0.33-dev.1"
   }
 }

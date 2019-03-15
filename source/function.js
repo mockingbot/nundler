@@ -56,6 +56,13 @@ const p7zExtract = (sourceFileName, outputPath) => spawnSync('7z', [
   '-y', '-bso0', '-bsp0'
 ], SPAWN_CONFIG)
 
+const p7zDetect = () => {
+  try { // test for: `-bs{o|e|p}{0|1|2} : set output stream for output/error/progress line`
+    if (String(execSync('7z')).includes(`-bs{o|e|p}{0|1|2}`)) return
+  } catch (error) {}
+  throw new Error(`[p7zDetect] expect "7z" with "-bs{o|e|p}{0|1|2}" support in PATH`)
+}
+
 const gzipFile = (sourceFile) => writeFileSync(
   `${sourceFile}.gz`,
   gzipSync(
@@ -69,6 +76,6 @@ export {
   getGitBranch, getGitCommitHash,
   dispelMagicString,
   tarCompress, tarExtract,
-  p7zCompress, p7zExtract,
+  p7zCompress, p7zExtract, p7zDetect,
   gzipFile
 }

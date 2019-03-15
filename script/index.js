@@ -3,11 +3,10 @@ import { execSync } from 'child_process'
 
 import { binary as formatBinary } from 'dr-js/module/common/format'
 
-import { argvFlag, runMain } from 'dr-dev/module/main'
-import { getLogger } from 'dr-dev/module/logger'
-import { getScriptFileListFromPathList } from 'dr-dev/module/fileList'
-import { initOutput, packOutput, verifyOutputBinVersion, publishOutput } from 'dr-dev/module/commonOutput'
-import { processFileList, fileProcessorBabel } from 'dr-dev/module/fileProcessor'
+import { getScriptFileListFromPathList } from 'dr-dev/module/node/fileList'
+import { runMain, argvFlag } from 'dr-dev/module/main'
+import { initOutput, packOutput, verifyOutputBinVersion, publishOutput } from 'dr-dev/module/output'
+import { processFileList, fileProcessorBabel, fileProcessorWebpack } from 'dr-dev/module/fileProcessor'
 import { getTerserOption, minifyFileListWithTerser } from 'dr-dev/module/minify'
 
 const PATH_ROOT = resolve(__dirname, '..')
@@ -39,11 +38,13 @@ runMain(async (logger) => {
 
   padLog(`process output`)
   let sizeReduce = 0
-  sizeReduce += await minifyFileListWithTerser({ fileList, option: getTerserOption(), rootPath: PATH_OUTPUT, logger })
   sizeReduce += await processFileList({ fileList, processor: fileProcessorBabel, rootPath: PATH_OUTPUT, logger })
+  sizeReduce += await processFileList({ fileList, processor: fileProcessorWebpack, rootPath: PATH_OUTPUT, logger })
+  sizeReduce += await minifyFileListWithTerser({ fileList, option: getTerserOption(), rootPath: PATH_OUTPUT, logger })
   // again
-  sizeReduce += await minifyFileListWithTerser({ fileList, option: getTerserOption(), rootPath: PATH_OUTPUT, logger })
   sizeReduce += await processFileList({ fileList, processor: fileProcessorBabel, rootPath: PATH_OUTPUT, logger })
+  sizeReduce += await processFileList({ fileList, processor: fileProcessorWebpack, rootPath: PATH_OUTPUT, logger })
+  sizeReduce += await minifyFileListWithTerser({ fileList, option: getTerserOption(), rootPath: PATH_OUTPUT, logger })
   padLog(`library-babel size reduce: ${formatBinary(sizeReduce)}B`)
 
   await verifyOutputBinVersion({ fromOutput, packageJSON, logger })
@@ -54,4 +55,4 @@ runMain(async (logger) => {
 
   const pathPackagePack = await packOutput({ fromRoot, fromOutput, logger })
   await publishOutput({ flagList: process.argv, packageJSON, pathPackagePack, extraArgs: [ '--userconfig', '~/mockingbot.npmrc' ], logger })
-}, getLogger(process.argv.slice(2).join('+'), argvFlag('quiet')))
+})

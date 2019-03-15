@@ -5,7 +5,6 @@ import { createDirectory } from 'dr-js/module/node/file/File'
 import { modify } from 'dr-js/module/node/file/Modify'
 
 import { argvFlag, runMain } from 'dr-dev/module/main'
-import { getLogger } from 'dr-dev/module/logger'
 
 const fromExample = (...args) => resolve(__dirname, ...args)
 
@@ -84,4 +83,4 @@ runMain(async ({ padLog, log }) => {
       fromExample('sample-7z-directory-gitignore')
     )
   }
-}, getLogger(process.argv.slice(2).join('+'), argvFlag('quiet')))
+})
