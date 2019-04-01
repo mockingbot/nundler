@@ -1,11 +1,13 @@
 {
   "private": true,
   "name": "nundler",
-  "version": "0.0.3-dev.13",
+  "version": "0.0.3-dev.14",
   "description": "Not bundler",
   "author": "mockingbot",
   "license": "MIT",
+  "repository": "github:mockingbot/nundler",
   "bin": "bin/index.js",
+  "main": "library/index.js",
   "scripts": {
     "// script ======================": "",
     "script-base": "babel-node script quiet",
@@ -52,9 +54,9 @@
     "npm": ">=6"
   },
   "devDependencies": {
-    "dr-dev": "0.0.5-dev.2",
-    "dr-dev-web": "0.0.5-dev.2",
-    "dr-js": "0.21.0-dev.1",
-    "dr-server": "0.0.33-dev.1"
+    "dr-dev": "0.0.6-dev.1",
+    "dr-dev-web": "0.0.6-dev.1",
+    "dr-js": "0.21.1-dev.1",
+    "dr-server": "0.0.34-dev.1"
   }
 }

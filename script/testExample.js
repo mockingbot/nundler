@@ -240,4 +240,4 @@ runMain(async ({ padLog, stepLog }) => {
     padLog('stop example server')
   })
   stepLog('stop example server done')
-}, [ 'test-example', ...process.argv.slice(2) ].join('+'))
+}, 'test-example')

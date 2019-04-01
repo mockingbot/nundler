@@ -1,6 +1,7 @@
 # nundler
 
 [![i:npm]][l:npm]
+[![i:ci]][l:ci]
 [![i:size]][l:size]
 [![i:lint]][l:lint]
 [![i:npm-dev]][l:npm]
@@ -10,6 +11,8 @@ Not bundler
 [i:npm]: https://img.shields.io/npm/v/nundler.svg?colorB=blue
 [i:npm-dev]: https://img.shields.io/npm/v/nundler/dev.svg
 [l:npm]: https://npm.im/nundler
+[i:ci]: https://img.shields.io/travis/mockingbot/nundler/master.svg
+[l:ci]: https://travis-ci.org/mockingbot/nundler
 [i:size]: https://packagephobia.now.sh/badge?p=nundler
 [l:size]: https://packagephobia.now.sh/result?p=nundler
 [i:lint]: https://img.shields.io/badge/code_style-standard_ES6+-yellow.svg
