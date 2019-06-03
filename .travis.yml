@@ -6,7 +6,6 @@ node_js:
   - 10
 
 before_install:
-  - git checkout -f master
   - wget -O ~/p7zip-full.deb http://mirrors.kernel.org/ubuntu/pool/universe/p/p7zip/p7zip-full_16.02+dfsg-6_amd64.deb
   - wget -O ~/p7zip.deb http://mirrors.kernel.org/ubuntu/pool/universe/p/p7zip/p7zip_16.02+dfsg-6_amd64.deb
   - sudo dpkg -i ~/p7zip.deb

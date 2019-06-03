@@ -1,13 +1,13 @@
 {
   "private": true,
   "name": "nundler",
-  "version": "0.0.3-dev.14",
+  "version": "0.0.3-dev.15",
   "description": "Not bundler",
   "author": "mockingbot",
   "license": "MIT",
   "repository": "github:mockingbot/nundler",
-  "bin": "bin/index.js",
   "main": "library/index.js",
+  "bin": "bin/index.js",
   "scripts": {
     "// script ======================": "",
     "script-base": "babel-node script quiet",

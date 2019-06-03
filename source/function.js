@@ -8,8 +8,14 @@ import { getTimestamp } from 'dr-js/module/common/time'
 import { PATH_ACTION_TYPE } from 'dr-server/module/feature/Explorer/task/pathAction'
 import { getAuthFetch, pathAction, fileUpload, fileDownload } from 'dr-server/module/featureNode/explorer'
 
-const getGitBranch = () => String(execSync('git symbolic-ref --short HEAD')).replace(/\s/g, '')
-const getGitCommitHash = () => String(execSync('git log -1 --format="%H"')).replace(/\s/g, '')
+const trimExec = (output) => String(output).replace(/\s/g, '')
+
+const getGitBranch = () => {
+  try {
+    return trimExec(execSync('git symbolic-ref --short', { stdio: 'pipe' }))
+  } catch (error) { return `detached-HEAD/${trimExec(execSync('git rev-parse --short HEAD'))}` }
+}
+const getGitCommitHash = () => trimExec(execSync('git log -1 --format="%H"'))
 
 const cacheValue = (func) => {
   let value
