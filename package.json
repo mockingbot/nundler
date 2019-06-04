@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "nundler",
-  "version": "0.0.3-dev.15",
+  "version": "0.0.3",
   "description": "Not bundler",
   "author": "mockingbot",
   "license": "MIT",
