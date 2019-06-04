@@ -12,7 +12,7 @@ const trimExec = (output) => String(output).replace(/\s/g, '')
 
 const getGitBranch = () => {
   try {
-    return trimExec(execSync('git symbolic-ref --short', { stdio: 'pipe' }))
+    return trimExec(execSync('git symbolic-ref --short HEAD', { stdio: 'pipe' }))
   } catch (error) { return `detached-HEAD/${trimExec(execSync('git rev-parse --short HEAD'))}` }
 }
 const getGitCommitHash = () => trimExec(execSync('git log -1 --format="%H"'))
