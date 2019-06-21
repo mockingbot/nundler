@@ -27,14 +27,14 @@ const loadPackageList = ({
   const {
     dependencies,
     devDependencies,
-    peerDependencies,
-    optionalDependencies
+    // peerDependencies, // NOTE: ignore peerDependencies, since this is not intended to be installed
+    optionalDependencies // TODO: support allow failed install pass?
   } = JSON.parse(readFileSync(pathPackageJSON))
 
   __DEV__ && console.log({
     dependencies,
     devDependencies,
-    peerDependencies,
+    // peerDependencies,
     optionalDependencies
   })
 
@@ -42,7 +42,7 @@ const loadPackageList = ({
     .entries({
       ...dependencies,
       ...devDependencies,
-      ...peerDependencies,
+      // ...peerDependencies,
       ...optionalDependencies
     })
     .filter(([ packageName ]) => filterList.find((filter) => filter.test(packageName)))
