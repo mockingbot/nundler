@@ -13,21 +13,21 @@ const listFile = async ({
   authFetch,
   log
 }) => {
-  const { resultList: [ { relativeFrom, fileList } ] } = await pathAction({
+  const { resultList: [ { key, fileList } ] } = await pathAction({
     actionType: PATH_ACTION_TYPE.DIRECTORY_ALL_FILE_LIST,
     key: listKeyPrefix,
     urlPathAction,
     timeout,
     authFetch
   })
-  __DEV__ && console.log(`[listPackage]`, { listKeyPrefix, relativeFrom, fileList })
+  __DEV__ && console.log(`[listPackage]`, { listKeyPrefix, key, fileList })
 
   log(`[List] listKeyPrefix: ${listKeyPrefix}\n${indentLine(padTable({
     table: [
       [ 'mTime', 'size', 'key' ],
       ...fileList
         .sort(([ , , mTimeA ], [ , , mTimeB ]) => (mTimeB - mTimeA)) // newer first
-        .map(([ name, size, mTimeMs ]) => [ new Date(mTimeMs).toISOString(), `${binary(size)}B`, toPosixPath(join(relativeFrom, name)) ])
+        .map(([ name, size, mTimeMs ]) => [ new Date(mTimeMs).toISOString(), `${binary(size)}B`, toPosixPath(join(key, name)) ])
     ],
     padFuncList: [ 'L', 'R', 'L' ]
   }))}`)

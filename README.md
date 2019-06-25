@@ -3,7 +3,6 @@
 [![i:npm]][l:npm]
 [![i:ci]][l:ci]
 [![i:size]][l:size]
-[![i:lint]][l:lint]
 [![i:npm-dev]][l:npm]
 
 Not bundler
@@ -15,8 +14,6 @@ Not bundler
 [l:ci]: https://travis-ci.org/mockingbot/nundler
 [i:size]: https://packagephobia.now.sh/badge?p=nundler
 [l:size]: https://packagephobia.now.sh/result?p=nundler
-[i:lint]: https://img.shields.io/badge/code_style-standard_ES6+-yellow.svg
-[l:lint]: https://standardjs.com
 
 [//]: # (NON_PACKAGE_CONTENT)
 

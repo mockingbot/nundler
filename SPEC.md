@@ -10,12 +10,12 @@
 + 📄 [source/file.js](source/file.js)
   - `downloadFile`, `listFile`, `uploadFile`
 + 📄 [source/function.js](source/function.js)
-  - `PATH_ACTION_TYPE`, `dispelMagicString`, `fileDownload`, `fileUpload`, `getAuthFetch`, `getGitBranch`, `getGitCommitHash`, `gzipFile`, `p7zCompress`, `p7zDetect`, `p7zExtract`, `pathAction`, `tarCompress`, `tarExtract`
+  - `PATH_ACTION_TYPE`, `configureAuthFile`, `dispelMagicString`, `fileDownload`, `fileUpload`, `getGitBranch`, `getGitCommitHash`, `gzipFile`, `p7zCompress`, `p7zDetect`, `p7zExtract`, `pathAction`, `tarCompress`, `tarExtract`
 + 📄 [source/package.js](source/package.js)
   - `downloadPackage`, `listPackage`, `loadPackageList`, `uploadPackage`
 
 #### Export Tree
-- `downloadDirectory`, `uploadDirectory`, `downloadFile`, `listFile`, `uploadFile`, `PATH_ACTION_TYPE`, `dispelMagicString`, `fileDownload`, `fileUpload`, `getAuthFetch`, `getGitBranch`, `getGitCommitHash`, `gzipFile`, `p7zCompress`, `p7zDetect`, `p7zExtract`, `pathAction`, `tarCompress`, `tarExtract`, `downloadPackage`, `listPackage`, `loadPackageList`, `uploadPackage`
+- `downloadDirectory`, `uploadDirectory`, `downloadFile`, `listFile`, `uploadFile`, `PATH_ACTION_TYPE`, `configureAuthFile`, `dispelMagicString`, `fileDownload`, `fileUpload`, `getGitBranch`, `getGitCommitHash`, `gzipFile`, `p7zCompress`, `p7zDetect`, `p7zExtract`, `pathAction`, `tarCompress`, `tarExtract`, `downloadPackage`, `listPackage`, `loadPackageList`, `uploadPackage`
 
 #### Bin Option Format
 📄 [source-bin/option.js](source-bin/option.js)

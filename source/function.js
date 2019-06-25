@@ -5,8 +5,9 @@ import { gzipSync } from 'zlib'
 
 import { getTimestamp } from 'dr-js/module/common/time'
 
+import { configureAuthFile } from 'dr-server/module/feature/Auth/configure'
 import { PATH_ACTION_TYPE } from 'dr-server/module/feature/Explorer/task/pathAction'
-import { getAuthFetch, pathAction, fileUpload, fileDownload } from 'dr-server/module/featureNode/explorer'
+import { pathAction, fileUpload, fileDownload } from 'dr-server/module/feature/Explorer/task/client'
 
 const trimExec = (output) => String(output).replace(/\s/g, '')
 
@@ -78,7 +79,8 @@ const gzipFile = (sourceFile) => writeFileSync(
 )
 
 export {
-  PATH_ACTION_TYPE, getAuthFetch, pathAction, fileUpload, fileDownload,
+  configureAuthFile,
+  PATH_ACTION_TYPE, pathAction, fileUpload, fileDownload,
   getGitBranch, getGitCommitHash,
   dispelMagicString,
   tarCompress, tarExtract,

@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "nundler",
-  "version": "0.1.0-dev.1",
+  "version": "0.1.0-dev.2",
   "description": "Not bundler",
   "author": "mockingbot",
   "license": "MIT",
@@ -10,7 +10,6 @@
   "bin": "bin/index.js",
   "scripts": {
     "// script ======================": "",
-    "script-base": "babel-node script quiet",
     "script-pack": "babel-node script quiet pack",
     "script-pack-test": "babel-node script pack test",
     "script-publish": "babel-node script pack publish",
@@ -46,6 +45,7 @@
     "analyze-stat": "npx webpack-bundle-analyzer .temp-gitignore/profile-stat.json",
     "analyze-stat-bin": "npx webpack-bundle-analyzer --port 9999 .temp-gitignore/profile-stat-bin.json",
     "test": "npm run script-pack-test",
+    "lint": "eslint ./source/ ./source-bin/ ./script/ ./example/",
     "postinstall": "npm run example-reset",
     "prepack": "echo \"Error: pack with script-*\" && exit 1"
   },
@@ -54,9 +54,9 @@
     "npm": ">=6"
   },
   "devDependencies": {
-    "dr-dev": "0.0.6-dev.4",
-    "dr-dev-web": "0.0.6-dev.4",
-    "dr-js": "0.21.1-dev.3",
-    "dr-server": "0.0.34-dev.3"
+    "dr-dev": "0.0.6-dev.8",
+    "dr-dev-web": "0.0.6-dev.8",
+    "dr-js": "0.22.2-dev.0",
+    "dr-server": "0.2.0-dev.2"
   }
 }

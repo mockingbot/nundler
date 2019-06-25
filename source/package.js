@@ -29,7 +29,7 @@ const loadPackageList = ({
     devDependencies,
     // peerDependencies, // NOTE: ignore peerDependencies, since this is not intended to be installed
     optionalDependencies // TODO: support allow failed install pass?
-  } = JSON.parse(readFileSync(pathPackageJSON))
+  } = JSON.parse(String(readFileSync(pathPackageJSON)))
 
   __DEV__ && console.log({
     dependencies,
@@ -87,12 +87,12 @@ const listPackage = async ({
   __DEV__ && console.log({ contentList })
   __DEV__ && console.log(JSON.stringify(contentList, null, 2))
 
-  const serverPackageList = unique(contentList.reduce((o, { relativeFrom, fileList }) => {
+  const serverPackageList = unique(contentList.reduce((o, { key, fileList }) => {
     fileList.forEach(([ name ]) => {
       const result = REGEXP_PACKAGE_VERSION.exec(name) || []
       const packageVersion = result[ 1 ]
       const packageFileName = name.slice(0, result.index)
-      const serverPath = toPosixPath(join(relativeFrom, name))
+      const serverPath = toPosixPath(join(key, name))
       o.push({ packageVersion, packageFileName, serverPath })
     })
     return o
@@ -150,7 +150,7 @@ const uploadPackage = async ({
     if (isVisible) {
       log(tag, `skip server exist ${packageName}: ${packagePath}`)
     } else {
-      await fileUpload({ fileInputPath: localPath, filePath: serverPath, urlFileUpload, timeout, authFetch, log })
+      await fileUpload({ fileInputPath: localPath, key: serverPath, urlFileUpload, timeout, authFetch, log })
       log(tag, `done ${packageName}: ${packagePath}`)
     }
   }
@@ -171,7 +171,7 @@ const downloadPackage = async ({
       log(tag, `skip local exist ${packageName}: ${packagePath}`)
     } else {
       const fileTempPath = `${localPath}_temp_${Date.now().toString(36)}`
-      await fileDownload({ fileOutputPath: fileTempPath, filePath: serverPath, urlFileDownload, timeout, authFetch, log })
+      await fileDownload({ fileOutputPath: fileTempPath, key: serverPath, urlFileDownload, timeout, authFetch, log })
       await modify.move(fileTempPath, localPath)
       log(tag, `done ${packageName}: ${packagePath}`)
     }

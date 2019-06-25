@@ -2,7 +2,7 @@
   "server": true,
   "host": ":18080",
   "authFile": "./example-gitignore.key",
-  "authGen": true,
+  "authFileGenTag": "TEST_TAG",
   "permissionType": "allow",
   "explorerRootPath": "./server-root-gitignore",
   "explorerUploadMergePath": "./server-root-gitignore/[UPLOAD]"

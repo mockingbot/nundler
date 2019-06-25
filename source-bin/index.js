@@ -2,7 +2,7 @@ import { time } from 'dr-js/module/common/format'
 import { clock } from 'dr-js/module/common/time'
 
 import {
-  getAuthFetch, dispelMagicString,
+  configureAuthFile, dispelMagicString,
   listFile, uploadFile, downloadFile,
   uploadDirectory, downloadDirectory,
   loadPackageList, listPackage, uploadPackage, downloadPackage
@@ -13,8 +13,8 @@ import { name as packageName, version as packageVersion } from '../package.json'
 
 const runMode = async (modeName, { tryGet, tryGetFirst, get, getFirst }) => {
   const timeout = tryGetFirst('timeout') || 0
-  const authFetch = await getAuthFetch({
-    fileAuth: getFirst('auth-file'),
+  const { authFetch } = await configureAuthFile({
+    authFile: getFirst('auth-file'),
     authKey: tryGetFirst('auth-key')
   })
   const timeStart = clock()
@@ -77,10 +77,10 @@ const runMode = async (modeName, { tryGet, tryGetFirst, get, getFirst }) => {
       })
     case 'upload': {
       commonOption.urlFileUpload = getFirst('url-file-upload')
-      commonOption.filePath = dispelMagicString(getFirst('upload-key'))
+      commonOption.key = dispelMagicString(getFirst('upload-key'))
       return isDirectoryMode
         ? uploadDirectory({
-          uploadDirectory: getFirst('upload-directory'),
+          directoryInputPath: getFirst('upload-directory'),
           infoString: dispelMagicString((tryGet('directory-pack-info') || [ '{date-iso}' ]).join('\n')),
           ...commonOption
         })
@@ -91,10 +91,10 @@ const runMode = async (modeName, { tryGet, tryGetFirst, get, getFirst }) => {
     }
     case 'download': {
       commonOption.urlFileDownload = getFirst('url-file-download')
-      commonOption.filePath = dispelMagicString(getFirst('download-key'))
+      commonOption.key = dispelMagicString(getFirst('download-key'))
       return isDirectoryMode
         ? downloadDirectory({
-          downloadDirectory: getFirst('download-directory'),
+          directoryOutputPath: getFirst('download-directory'),
           ...commonOption
         })
         : downloadFile({
