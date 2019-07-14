@@ -21,6 +21,10 @@ runMain(async (logger) => {
   const packageJSON = await initOutput({ fromRoot, fromOutput, logger })
 
   if (!argvFlag('pack')) return
+  if (argvFlag('test', 'publish', 'publish-dev')) {
+    padLog(`lint source`)
+    execSync('npm run lint', execOptionRoot)
+  }
 
   padLog('generate spec')
   execSync(`npm run script-generate-spec`, execOptionRoot)
@@ -50,6 +54,7 @@ runMain(async (logger) => {
   await verifyOutputBinVersion({ fromOutput, packageJSON, logger })
 
   if (argvFlag('test', 'publish', 'publish-dev')) {
+    padLog(`test example`)
     execSync('npm run test-example', execOptionRoot)
   }
 

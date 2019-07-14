@@ -18,7 +18,7 @@ const getGitBranch = () => {
 }
 const getGitCommitHash = () => trimExec(execSync('git log -1 --format="%H"'))
 
-const cacheValue = (func) => {
+const cacheValue = (func) => { // TODO: NOTE: func should not return undefined
   let value
   return () => {
     if (value === undefined) value = func()
@@ -36,7 +36,7 @@ const dispelMagicString = (string = '') => string
   .replace(/{timestamp}/g, getTimestampCached)
   .replace(/{date-iso}/g, getDateISOCached)
 
-const SPAWN_CONFIG = { stdio: 'inherit', env: { ...process.env, GZIP: '-9' } }
+const SPAWN_CONFIG = { stdio: 'inherit' }
 
 const tarCompress = (sourcePath, outputFileName) => spawnSync('tar', [
   '-zcf', outputFileName,
@@ -63,20 +63,14 @@ const p7zExtract = (sourceFileName, outputPath) => spawnSync('7z', [
   '-y', '-bso0', '-bsp0'
 ], SPAWN_CONFIG)
 
-const p7zDetect = () => {
-  try { // test for: `-bs{o|e|p}{0|1|2} : set output stream for output/error/progress line`
+const p7zDetect = () => { // test for: `-bs{o|e|p}{0|1|2} : set output stream for output/error/progress line`
+  try {
     if (String(execSync('7z')).includes(`-bs{o|e|p}{0|1|2}`)) return
   } catch (error) {}
   throw new Error(`[p7zDetect] expect "7z" with "-bs{o|e|p}{0|1|2}" support in PATH`)
 }
 
-const gzipFile = (sourceFile) => writeFileSync(
-  `${sourceFile}.gz`,
-  gzipSync(
-    readFileSync(sourceFile),
-    { level: 9 }
-  )
-)
+const gzipFile = (sourceFile) => writeFileSync(`${sourceFile}.gz`, gzipSync(readFileSync(sourceFile)))
 
 export {
   configureAuthFile,

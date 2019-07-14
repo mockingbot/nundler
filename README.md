@@ -31,7 +31,7 @@ Not bundler
 
 build dev with watch:
 ```bash
-npm run script-base
+npm run script-pack
 npm run build-library-dev
 npm run build-bin-dev
 ```
