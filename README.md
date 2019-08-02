@@ -30,24 +30,24 @@ Not bundler
 #### Test example setup
 
 build dev with watch:
-```bash
+```shell script
 npm run script-pack
 npm run build-library-dev
 npm run build-bin-dev
 ```
 
 start example server:
-```bash
+```shell script
 npm run example-start-server
 ```
 
 clear up example file: (optional)
-```bash
+```shell script
 npm run example-reset
 ```
 
 run each example:
-```bash
+```shell script
 npm run example-file-list
 npm run example-file-upload
 npm run example-file-download
@@ -61,32 +61,33 @@ npm run example-directory-download
 
 or run `npm test` for full build & test
 
+
 ## Concept
 
-This package should provide 
-a somewhat usable **private package setup**
+This package should provide a somewhat usable **private package setup**
 
 This package can `list/upload/download` other npm package 
-from self-hosted server
-with home-made auth check
+from self-hosted server with home-made auth check
 
 This package do not help pack package `.tgz`,
 or run the actual package install
 
+
 #### Common Setup
 
-in order to install some private package on `npm install`
+For this **private package setup** to work with `npm install`,
+some change & config is required.
 
-first add `package.json`
+First edit `package.json`:
 ```json5
 {
   "devDependencies": {
-    // private package with local path
+    // New private package, with a local path
     "@nundler/local-aaa": "./.nundler-gitignore/nundler-local-aaa-0.0.0.tgz",
     "@nundler/local-bbb": "./.nundler-gitignore/nundler-local-bbb-1.1.1.tgz",
     "@nundler/local-ccc": "./.nundler-gitignore/nundler-local-ccc-2.2.2.tgz",
 
-    // maybe have other normal npm public package
+    // Other normal npm public package
     "other-aaa": "^0.0.0",
     "other-bbb": "^1.1.1",
     "other-ccc": "^2.2.2",
@@ -94,11 +95,12 @@ first add `package.json`
 }
 ```
 
-so to correctly install,
-local package should exist at `./.nundler-gitignore/`
+Then, for this to correctly install,
+those private package should exist under local path: `./.nundler-gitignore/`
 
-add to `preinstall`:
-```bash
+To pull those packages before the install start,
+add `nundler` to `preinstall`:
+```shell script
 npx nundler\
   --download\
   --package-json ./package.json\
@@ -106,41 +108,41 @@ npx nundler\
   --package-path-prefix "some/server/path/prefix"\
   --url-file-download "https://url/file/download"\
   --auth-file "./path/to/auth/file"
-  # or put all to --config ./nundler.config.json
+  # or put all to `--config ./nundler.config.json` for a cleaner script
 ```
 
-now upload the required package to server
+Now upload the required package to server, if it's not done already
 (assume download from `https://url/file/download`)
 
-since we specified prefix `some/server/path/prefix`,
-the file should be accessible with key:
+With the specified prefix `some/server/path/prefix`,
+the file should be accessible from the server with options like:
 ```
-some/server/path/prefix/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz
-some/server/path/prefix/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz
-some/server/path/prefix/.nundler-gitignore/nundler-local-ccc-2.2.2.tgz
+https://url/file/download?file=some/server/path/prefix/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz
+https://url/file/download?file=some/server/path/prefix/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz
+https://url/file/download?file=some/server/path/prefix/.nundler-gitignore/nundler-local-ccc-2.2.2.tgz
 ```
 
-similar example setup is under `example/sample-package/`
+Similar example setup can be found in `example/sample-package/`
 
-test with:
-```
-# first
+Test with:
+```shell script
 npm run example-reset # reset example file
-
-# then
 npm run example-start-server # start file server
 
-# check under `example/sample-package` first, should only have `package.json`
+# check under `example/sample-package-gitignore/` first,
+# should only have single file: `package.json`
 
-npm run example-package-download 
+npm run example-package-download # pull private packages from server
 
-# now should have `.tgz` file in `example/sample-package/.nundler-gitignore/`
+# now should have `.tgz` file for private packages,
+# in `example/sample-package-gitignore/.nundler-gitignore/`
 ```
+
 
 #### Limitation
 
 - require edit `preinstall` script
-- require use package `path` instead of `version` in `package.json`
+- require use `path` instead of `version` to specify package in `package.json`
 
 
 #### 7zip install

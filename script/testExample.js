@@ -3,7 +3,7 @@ import { resolve } from 'path'
 import { indentLine } from 'dr-js/module/common/string'
 import { strictEqual, stringifyEqual, notStrictEqual } from 'dr-js/module/common/verify'
 import { visibleAsync, statAsync } from 'dr-js/module/node/file/function'
-import { modify } from 'dr-js/module/node/file/Modify'
+import { modifyDelete } from 'dr-js/module/node/file/Modify'
 import { runQuiet } from 'dr-js/module/node/system/Run'
 
 import { withRunBackground } from 'dr-dev/module/node/run'
@@ -99,8 +99,8 @@ runMain(async ({ padLog, stepLog }) => {
       )
     })
     await runTest('package-upload', async () => {
-      await modify.delete(fromRoot('example/server-root-gitignore/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'))
-      await modify.delete(fromRoot('example/server-root-gitignore/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'))
+      await modifyDelete(fromRoot('example/server-root-gitignore/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'))
+      await modifyDelete(fromRoot('example/server-root-gitignore/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'))
       await runWithOutputString('npm run example-package-upload')
       await verifyExampleFileExist('package-download', 'server-root-gitignore/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz')
       await verifyExampleFileExist('package-download', 'server-root-gitignore/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz')

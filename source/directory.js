@@ -3,9 +3,9 @@ import { resolve, relative } from 'path'
 import { indentLine } from 'dr-js/module/common/string'
 import { getRandomId } from 'dr-js/module/common/math/random'
 
-import { readFileAsync, writeFileAsync, visibleAsync, toPosixPath } from 'dr-js/module/node/file/function'
-import { createDirectory, deletePath } from 'dr-js/module/node/file/File'
-import { getFileList } from 'dr-js/module/node/file/Directory'
+import { readFileAsync, writeFileAsync, visibleAsync } from 'dr-js/module/node/file/function'
+import { deletePath, toPosixPath } from 'dr-js/module/node/file/Path'
+import { createDirectory, getFileList } from 'dr-js/module/node/file/Directory'
 
 import { uploadFile, downloadFile } from './file'
 import { tarCompress, tarExtract, p7zCompress, p7zExtract, p7zDetect, gzipFile } from './function'

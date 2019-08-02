@@ -5,8 +5,9 @@ import { padTable } from 'dr-js/module/common/format'
 import { indentLine } from 'dr-js/module/common/string'
 import { compareSemVer } from 'dr-js/module/common/module/SemVer'
 
-import { visibleAsync, toPosixPath } from 'dr-js/module/node/file/function'
-import { modify } from 'dr-js/module/node/file/Modify'
+import { visibleAsync } from 'dr-js/module/node/file/function'
+import { toPosixPath } from 'dr-js/module/node/file/Path'
+import { modifyMove } from 'dr-js/module/node/file/Modify'
 
 import { PATH_ACTION_TYPE, pathAction, fileUpload, fileDownload } from './function'
 
@@ -143,13 +144,12 @@ const uploadPackage = async ({
   })
 
   for (let index = 0, indexMax = packageList.length; index < indexMax; index++) {
-    const tag = `[PackageUpload|${index}/${indexMax}]`
+    const tag = `[PackageUpload|${index + 1}/${indexMax}]`
     const { packageName, packagePath, serverPath, localPath } = packageList[ index ]
     const { isVisible } = visibleList[ index ]
 
-    if (isVisible) {
-      log(tag, `skip server exist ${packageName}: ${packagePath}`)
-    } else {
+    if (isVisible) log(tag, `exist: ${packagePath}`)
+    else {
       await fileUpload({ fileInputPath: localPath, key: serverPath, urlFileUpload, timeout, authFetch, log })
       log(tag, `done ${packageName}: ${packagePath}`)
     }
@@ -164,15 +164,14 @@ const downloadPackage = async ({
   log
 }) => {
   for (let index = 0, indexMax = packageList.length; index < indexMax; index++) {
-    const tag = `[PackageDownload|${index}/${indexMax}]`
+    const tag = `[PackageDownload|${index + 1}/${indexMax}]`
     const { packageName, packagePath, serverPath, localPath } = packageList[ index ]
 
-    if (await visibleAsync(localPath)) {
-      log(tag, `skip local exist ${packageName}: ${packagePath}`)
-    } else {
+    if (await visibleAsync(localPath)) log(tag, `exist: ${packagePath}`)
+    else {
       const fileTempPath = `${localPath}_temp_${Date.now().toString(36)}`
       await fileDownload({ fileOutputPath: fileTempPath, key: serverPath, urlFileDownload, timeout, authFetch, log })
-      await modify.move(fileTempPath, localPath)
+      await modifyMove(fileTempPath, localPath)
       log(tag, `done ${packageName}: ${packagePath}`)
     }
   }

@@ -2,7 +2,7 @@ import { join } from 'path'
 
 import { binary, padTable } from 'dr-js/module/common/format'
 import { indentLine } from 'dr-js/module/common/string'
-import { toPosixPath } from 'dr-js/module/node/file/function'
+import { toPosixPath } from 'dr-js/module/node/file/Path'
 
 import { PATH_ACTION_TYPE, pathAction, fileUpload, fileDownload } from './function'
 
