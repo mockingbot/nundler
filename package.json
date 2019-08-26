@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "nundler",
-  "version": "0.1.1-dev.0",
+  "version": "0.2.0-dev.0",
   "description": "Not bundler",
   "author": "mockingbot",
   "license": "MIT",
@@ -23,7 +23,8 @@
     "build-bin-dev": "node -r @babel/register ./script/webpack-bin development watch",
     "// example =====================": "",
     "example-reset": "node -r @babel/register example/index.js clear init",
-    "example-start-server": "npx dr-server -c example/server.config.json",
+    "example-auth-gen": "npx dr-node -c example/auth-gen.config.json",
+    "example-start-server": "npx dr-node -c example/server.config.json",
     "example-file-list": "node output-gitignore/bin -c example/test-file-list.config.json",
     "example-file-upload": "node output-gitignore/bin -c example/test-file-upload.config.json",
     "example-file-download": "node output-gitignore/bin -c example/test-file-download.config.json",
@@ -42,21 +43,21 @@
     "// test ========================": "",
     "test-example": "node -r @babel/register script/testExample",
     "// =============================": "",
-    "analyze-stat": "npx webpack-bundle-analyzer .temp-gitignore/profile-stat.json",
-    "analyze-stat-bin": "npx webpack-bundle-analyzer --port 9999 .temp-gitignore/profile-stat-bin.json",
+    "analyze-stat": "npx webpack-bundle-analyzer .temp-gitignore/profile-stat.json output-gitignore/library",
+    "analyze-stat-bin": "npx webpack-bundle-analyzer --port 9999 .temp-gitignore/profile-stat-bin.json output-gitignore/bin",
     "lint": "eslint ./source/ ./source-bin/ ./script/ ./example/",
     "test": "npm run script-pack-test",
     "postinstall": "npm run example-reset",
     "prepack": "echo \"Error: pack with script-*\" && exit 1"
   },
   "engines": {
-    "node": ">=10.16",
-    "npm": ">=6.10"
+    "node": ">=12.13",
+    "npm": ">=6.12"
   },
   "devDependencies": {
-    "dr-dev": "0.0.7-dev.1",
-    "dr-dev-web": "0.0.7-dev.1",
-    "dr-js": "0.23.0-dev.2",
-    "dr-server": "0.3.0-dev.0"
+    "@dr-js/core": "^0.1.0",
+    "@dr-js/dev": "^0.1.0",
+    "@dr-js/dev-web": "^0.1.0",
+    "@dr-js/node": "^0.1.0"
   }
 }

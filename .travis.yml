@@ -1,12 +1,10 @@
-dist: xenial
+dist: bionic # https://docs.travis-ci.com/user/reference/linux#using-ubuntu-linux-distributions
+
 language: node_js
 
 node_js:
   - node
-  - 10
+  - 12
 
 before_install:
-  - wget -O ~/p7zip-full.deb http://mirrors.kernel.org/ubuntu/pool/universe/p/p7zip/p7zip-full_16.02+dfsg-6_amd64.deb
-  - wget -O ~/p7zip.deb http://mirrors.kernel.org/ubuntu/pool/universe/p/p7zip/p7zip_16.02+dfsg-6_amd64.deb
-  - sudo dpkg -i ~/p7zip.deb
-  - sudo dpkg -i ~/p7zip-full.deb
+  - sudo apt-get -y install p7zip-full

@@ -1,15 +1,15 @@
 import { resolve } from 'path'
 
-import { indentLine } from 'dr-js/module/common/string'
-import { strictEqual, stringifyEqual, notStrictEqual } from 'dr-js/module/common/verify'
-import { visibleAsync, statAsync } from 'dr-js/module/node/file/function'
-import { modifyDelete } from 'dr-js/module/node/file/Modify'
-import { runQuiet } from 'dr-js/module/node/system/Run'
+import { indentLine } from '@dr-js/core/module/common/string'
+import { strictEqual, stringifyEqual, notStrictEqual } from '@dr-js/core/module/common/verify'
+import { visibleAsync, statAsync } from '@dr-js/core/module/node/file/function'
+import { modifyDelete } from '@dr-js/core/module/node/file/Modify'
+import { run } from '@dr-js/core/module/node/system/Run'
 
-import { withRunBackground } from 'dr-dev/module/node/run'
-import { runMain, argvFlag } from 'dr-dev/module/main'
+import { getGitBranch, getGitCommitHash } from '@dr-js/node/module/module/Software/git'
 
-import { getGitBranch, getGitCommitHash } from '../output-gitignore/library'
+import { withRunBackground } from '@dr-js/dev/module/node/run'
+import { runMain, argvFlag } from '@dr-js/dev/module/main'
 
 const PATH_ROOT = resolve(__dirname, '..')
 const fromRoot = (...args) => resolve(PATH_ROOT, ...args)
@@ -22,16 +22,17 @@ const verifyExampleFileExist = async (title, examplePath) => strictEqual(
   `[${title}] should file exist: ${examplePath}`
 )
 const runWithOutputString = async (command) => {
-  const { promise, stdoutBufferPromise } = runQuiet({ command, option: { ...execOptionRoot, stdio: [ 'ignore', 'pipe', 'pipe' ] } })
+  const { promise, stdoutPromise } = run({ command, option: { ...execOptionRoot, stdio: [ 'ignore', 'pipe', 'pipe' ] }, quiet: true })
   await promise
-  const outputString = String(await stdoutBufferPromise)
+  const outputString = String(await stdoutPromise)
   console.log(indentLine(outputString, '  > '))
   return outputString
 }
 
 runMain(async ({ padLog, stepLog }) => {
-  padLog('reset example')
+  padLog('reset example and create auth file')
   await runWithOutputString('npm run example-reset')
+  await runWithOutputString('npm run example-auth-gen')
 
   padLog('start example server')
   await withRunBackground({

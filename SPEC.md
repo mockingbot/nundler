@@ -9,13 +9,11 @@
   - `downloadDirectory`, `uploadDirectory`
 + 📄 [source/file.js](source/file.js)
   - `downloadFile`, `listFile`, `uploadFile`
-+ 📄 [source/function.js](source/function.js)
-  - `PATH_ACTION_TYPE`, `configureAuthFile`, `dispelMagicString`, `fileDownload`, `fileUpload`, `getGitBranch`, `getGitCommitHash`, `gzipFile`, `p7zCompress`, `p7zDetect`, `p7zExtract`, `pathAction`, `tarCompress`, `tarExtract`
 + 📄 [source/package.js](source/package.js)
   - `downloadPackage`, `listPackage`, `loadPackageList`, `uploadPackage`
 
 #### Export Tree
-- `downloadDirectory`, `uploadDirectory`, `downloadFile`, `listFile`, `uploadFile`, `PATH_ACTION_TYPE`, `configureAuthFile`, `dispelMagicString`, `fileDownload`, `fileUpload`, `getGitBranch`, `getGitCommitHash`, `gzipFile`, `p7zCompress`, `p7zDetect`, `p7zExtract`, `pathAction`, `tarCompress`, `tarExtract`, `downloadPackage`, `listPackage`, `loadPackageList`, `uploadPackage`
+- `downloadDirectory`, `uploadDirectory`, `downloadFile`, `listFile`, `uploadFile`, `downloadPackage`, `listPackage`, `loadPackageList`, `uploadPackage`
 
 #### Bin Option Format
 📄 [source-bin/option.js](source-bin/option.js)
@@ -32,7 +30,7 @@
 >       show version
 >   --magic-key [OPTIONAL] [ARGUMENT=0+]
 >       enable replace "{git-branch/git-commit-hash/timestamp/date-iso}" to current value in list/upload/download key name & directory-pack-info
->   --auth-file [OPTIONAL-CHECK] [ARGUMENT=1]
+>   --auth-file [ARGUMENT=1]
 >       path to auth file
 >   --auth-key [OPTIONAL] [ARGUMENT=1]
 >       auth key, of not use default
@@ -40,46 +38,46 @@
 >       set timeout, default to 0 (no timeout)
 >   --package-json --P -P [OPTIONAL] [ARGUMENT=1+]
 >       enable [PACKAGE] mode, pass the path of "package.json"
->     --package-name-filter --N -N [OPTIONAL-CHECK] [ARGUMENT=0+]
+>     --package-name-filter --N -N [ARGUMENT=0+]
 >         pass RegExp or String(startsWith) to filter package in "package.json"
->     --package-path-prefix [OPTIONAL-CHECK] [ARGUMENT=1]
+>     --package-path-prefix [ARGUMENT=1]
 >         String will prefix server package key
 >   --directory --DIR [OPTIONAL] [ARGUMENT=0+]
 >       enable [DIRECTORY] mode, pack directory as ".tgz/.7z" file in server, require "tar" command
->     --directory-pack-info [OPTIONAL-CHECK] [ARGUMENT=1+]
+>     --directory-pack-info [ARGUMENT=1+]
 >         extra info to add to PACK_INFO for ".tgz/.7z" file, default to "{date-iso}"
->     --trim-gz [OPTIONAL-CHECK] [ARGUMENT=0+]
+>     --trim-gz [ARGUMENT=0+]
 >         delete ".gz" file with source on upload, re-generate ".gz" file on download, will generate PACK_TRIM_GZ file
->     --use-7z [OPTIONAL-CHECK] [ARGUMENT=0+]
+>     --use-7z [ARGUMENT=0+]
 >         use ".7z" instead of ".tgz" for better file pack , require "7z@>=16.00" command
 >   --list --L -L [OPTIONAL] [ARGUMENT=0+]
 >       [FILE] list path on server
 >       [PACKAGE] list local/server package version, like "npm outdated"
 >       [DIRECTORY] list path on server
->     --url-path-action [OPTIONAL-CHECK] [ARGUMENT=1]
->     --list-key-prefix [OPTIONAL-CHECK] [ARGUMENT=1]
+>     --url-path-action [ARGUMENT=1]
+>     --list-key-prefix [ARGUMENT=1]
 >         for [FILE/DIRECTORY] mode
 >   --upload --U -U [OPTIONAL] [ARGUMENT=0+]
 >       [FILE] upload file to server, overwrite
 >       [PACKAGE] upload package to server, skip server existing, need also set "url-path-action"
 >       [DIRECTORY] pack & upload directory to server, as ".tgz/.7z" file, overwrite
->     --url-file-upload [OPTIONAL-CHECK] [ARGUMENT=1]
->     --upload-key [OPTIONAL-CHECK] [ARGUMENT=1]
+>     --url-file-upload [ARGUMENT=1]
+>     --upload-key [ARGUMENT=1]
 >         for [FILE/DIRECTORY] mode, recommend use ".tgz/.7z" for directory pack
->       --upload-file [OPTIONAL-CHECK] [ARGUMENT=1]
+>       --upload-file [ARGUMENT=1]
 >           for [FILE] mode
->       --upload-directory [OPTIONAL-CHECK] [ARGUMENT=1]
+>       --upload-directory [ARGUMENT=1]
 >           for [DIRECTORY] mode
 >   --download --D -D [OPTIONAL] [ARGUMENT=0+]
 >       [FILE] download file from server
 >       [PACKAGE] download all package found in "package-json", skip local existing, good for npm "preinstall" script
 >       [DIRECTORY] download & unpack directory from server
->     --url-file-download [OPTIONAL-CHECK] [ARGUMENT=1]
->     --download-key [OPTIONAL-CHECK] [ARGUMENT=1]
+>     --url-file-download [ARGUMENT=1]
+>     --download-key [ARGUMENT=1]
 >         for [FILE/DIRECTORY] mode, recommend use ".tgz/.7z" for directory pack
->       --download-file [OPTIONAL-CHECK] [ARGUMENT=1]
+>       --download-file [ARGUMENT=1]
 >           for [FILE] mode
->       --download-directory [OPTIONAL-CHECK] [ARGUMENT=1]
+>       --download-directory [ARGUMENT=1]
 >           for [DIRECTORY] mode
 > ENV Usage:
 >   "
@@ -89,29 +87,29 @@
 >     export NUNDLER_QUIET="[OPTIONAL] [ARGUMENT=0+]"
 >     export NUNDLER_VERSION="[OPTIONAL] [ARGUMENT=0+]"
 >     export NUNDLER_MAGIC_KEY="[OPTIONAL] [ARGUMENT=0+]"
->     export NUNDLER_AUTH_FILE="[OPTIONAL-CHECK] [ARGUMENT=1]"
+>     export NUNDLER_AUTH_FILE="[ARGUMENT=1]"
 >     export NUNDLER_AUTH_KEY="[OPTIONAL] [ARGUMENT=1]"
 >     export NUNDLER_TIMEOUT="[OPTIONAL] [ARGUMENT=1]"
 >     export NUNDLER_PACKAGE_JSON="[OPTIONAL] [ARGUMENT=1+]"
->     export NUNDLER_PACKAGE_NAME_FILTER="[OPTIONAL-CHECK] [ARGUMENT=0+]"
->     export NUNDLER_PACKAGE_PATH_PREFIX="[OPTIONAL-CHECK] [ARGUMENT=1]"
+>     export NUNDLER_PACKAGE_NAME_FILTER="[ARGUMENT=0+]"
+>     export NUNDLER_PACKAGE_PATH_PREFIX="[ARGUMENT=1]"
 >     export NUNDLER_DIRECTORY="[OPTIONAL] [ARGUMENT=0+]"
->     export NUNDLER_DIRECTORY_PACK_INFO="[OPTIONAL-CHECK] [ARGUMENT=1+]"
->     export NUNDLER_TRIM_GZ="[OPTIONAL-CHECK] [ARGUMENT=0+]"
->     export NUNDLER_USE_7Z="[OPTIONAL-CHECK] [ARGUMENT=0+]"
+>     export NUNDLER_DIRECTORY_PACK_INFO="[ARGUMENT=1+]"
+>     export NUNDLER_TRIM_GZ="[ARGUMENT=0+]"
+>     export NUNDLER_USE_7Z="[ARGUMENT=0+]"
 >     export NUNDLER_LIST="[OPTIONAL] [ARGUMENT=0+]"
->     export NUNDLER_URL_PATH_ACTION="[OPTIONAL-CHECK] [ARGUMENT=1]"
->     export NUNDLER_LIST_KEY_PREFIX="[OPTIONAL-CHECK] [ARGUMENT=1]"
+>     export NUNDLER_URL_PATH_ACTION="[ARGUMENT=1]"
+>     export NUNDLER_LIST_KEY_PREFIX="[ARGUMENT=1]"
 >     export NUNDLER_UPLOAD="[OPTIONAL] [ARGUMENT=0+]"
->     export NUNDLER_URL_FILE_UPLOAD="[OPTIONAL-CHECK] [ARGUMENT=1]"
->     export NUNDLER_UPLOAD_KEY="[OPTIONAL-CHECK] [ARGUMENT=1]"
->     export NUNDLER_UPLOAD_FILE="[OPTIONAL-CHECK] [ARGUMENT=1]"
->     export NUNDLER_UPLOAD_DIRECTORY="[OPTIONAL-CHECK] [ARGUMENT=1]"
+>     export NUNDLER_URL_FILE_UPLOAD="[ARGUMENT=1]"
+>     export NUNDLER_UPLOAD_KEY="[ARGUMENT=1]"
+>     export NUNDLER_UPLOAD_FILE="[ARGUMENT=1]"
+>     export NUNDLER_UPLOAD_DIRECTORY="[ARGUMENT=1]"
 >     export NUNDLER_DOWNLOAD="[OPTIONAL] [ARGUMENT=0+]"
->     export NUNDLER_URL_FILE_DOWNLOAD="[OPTIONAL-CHECK] [ARGUMENT=1]"
->     export NUNDLER_DOWNLOAD_KEY="[OPTIONAL-CHECK] [ARGUMENT=1]"
->     export NUNDLER_DOWNLOAD_FILE="[OPTIONAL-CHECK] [ARGUMENT=1]"
->     export NUNDLER_DOWNLOAD_DIRECTORY="[OPTIONAL-CHECK] [ARGUMENT=1]"
+>     export NUNDLER_URL_FILE_DOWNLOAD="[ARGUMENT=1]"
+>     export NUNDLER_DOWNLOAD_KEY="[ARGUMENT=1]"
+>     export NUNDLER_DOWNLOAD_FILE="[ARGUMENT=1]"
+>     export NUNDLER_DOWNLOAD_DIRECTORY="[ARGUMENT=1]"
 >   "
 > CONFIG Usage:
 >   {
@@ -120,28 +118,28 @@
 >     "quiet": [ "[OPTIONAL] [ARGUMENT=0+]" ],
 >     "version": [ "[OPTIONAL] [ARGUMENT=0+]" ],
 >     "magicKey": [ "[OPTIONAL] [ARGUMENT=0+]" ],
->     "authFile": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
+>     "authFile": [ "[ARGUMENT=1]" ],
 >     "authKey": [ "[OPTIONAL] [ARGUMENT=1]" ],
 >     "timeout": [ "[OPTIONAL] [ARGUMENT=1]" ],
 >     "packageJson": [ "[OPTIONAL] [ARGUMENT=1+]" ],
->     "packageNameFilter": [ "[OPTIONAL-CHECK] [ARGUMENT=0+]" ],
->     "packagePathPrefix": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
+>     "packageNameFilter": [ "[ARGUMENT=0+]" ],
+>     "packagePathPrefix": [ "[ARGUMENT=1]" ],
 >     "directory": [ "[OPTIONAL] [ARGUMENT=0+]" ],
->     "directoryPackInfo": [ "[OPTIONAL-CHECK] [ARGUMENT=1+]" ],
->     "trimGz": [ "[OPTIONAL-CHECK] [ARGUMENT=0+]" ],
->     "use7z": [ "[OPTIONAL-CHECK] [ARGUMENT=0+]" ],
+>     "directoryPackInfo": [ "[ARGUMENT=1+]" ],
+>     "trimGz": [ "[ARGUMENT=0+]" ],
+>     "use7z": [ "[ARGUMENT=0+]" ],
 >     "list": [ "[OPTIONAL] [ARGUMENT=0+]" ],
->     "urlPathAction": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
->     "listKeyPrefix": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
+>     "urlPathAction": [ "[ARGUMENT=1]" ],
+>     "listKeyPrefix": [ "[ARGUMENT=1]" ],
 >     "upload": [ "[OPTIONAL] [ARGUMENT=0+]" ],
->     "urlFileUpload": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
->     "uploadKey": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
->     "uploadFile": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
->     "uploadDirectory": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
+>     "urlFileUpload": [ "[ARGUMENT=1]" ],
+>     "uploadKey": [ "[ARGUMENT=1]" ],
+>     "uploadFile": [ "[ARGUMENT=1]" ],
+>     "uploadDirectory": [ "[ARGUMENT=1]" ],
 >     "download": [ "[OPTIONAL] [ARGUMENT=0+]" ],
->     "urlFileDownload": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
->     "downloadKey": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
->     "downloadFile": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
->     "downloadDirectory": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
+>     "urlFileDownload": [ "[ARGUMENT=1]" ],
+>     "downloadKey": [ "[ARGUMENT=1]" ],
+>     "downloadFile": [ "[ARGUMENT=1]" ],
+>     "downloadDirectory": [ "[ARGUMENT=1]" ],
 >   }
 > ```

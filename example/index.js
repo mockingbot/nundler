@@ -1,10 +1,10 @@
 import { resolve } from 'path'
 import { writeFileSync } from 'fs'
 
-import { createDirectory } from 'dr-js/module/node/file/Directory'
-import { modifyCopy, modifyDeleteForce } from 'dr-js/module/node/file/Modify'
+import { createDirectory } from '@dr-js/core/module/node/file/Directory'
+import { modifyCopy, modifyDeleteForce } from '@dr-js/core/module/node/file/Modify'
 
-import { argvFlag, runMain } from 'dr-dev/module/main'
+import { argvFlag, runMain } from '@dr-js/dev/module/main'
 
 const fromExample = (...args) => resolve(__dirname, ...args)
 

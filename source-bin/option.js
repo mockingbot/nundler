@@ -1,5 +1,4 @@
-import { Preset, getOptionalFormatFlag, prepareOption } from 'dr-js/module/node/module/Option/preset'
-// import { FILE_PACK_INFO, FILE_PACK_TRIM_GZ } from 'source'
+import { Preset, getOptionalFormatFlag, prepareOption } from '@dr-js/core/module/node/module/Option/preset'
 
 const { Config, parseCompactList } = Preset
 
@@ -73,4 +72,4 @@ const OPTION_CONFIG = {
 }
 const { parseOption, formatUsage } = prepareOption(OPTION_CONFIG)
 
-export { MODE_NAME_LIST, parseOption, formatUsage }
+export { FILE_PACK_INFO, FILE_PACK_TRIM_GZ, MODE_NAME_LIST, parseOption, formatUsage }

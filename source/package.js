@@ -1,15 +1,16 @@
 import { join, resolve, normalize, dirname, basename } from 'path'
 import { readFileSync } from 'fs'
 
-import { padTable } from 'dr-js/module/common/format'
-import { indentLine } from 'dr-js/module/common/string'
-import { compareSemVer } from 'dr-js/module/common/module/SemVer'
+import { padTable } from '@dr-js/core/module/common/format'
+import { indentLine } from '@dr-js/core/module/common/string'
+import { compareSemVer } from '@dr-js/core/module/common/module/SemVer'
 
-import { visibleAsync } from 'dr-js/module/node/file/function'
-import { toPosixPath } from 'dr-js/module/node/file/Path'
-import { modifyMove } from 'dr-js/module/node/file/Modify'
+import { visibleAsync } from '@dr-js/core/module/node/file/function'
+import { toPosixPath } from '@dr-js/core/module/node/file/Path'
+import { modifyMove } from '@dr-js/core/module/node/file/Modify'
 
-import { PATH_ACTION_TYPE, pathAction, fileUpload, fileDownload } from './function'
+import { PATH_ACTION_TYPE } from '@dr-js/node/module/module/PathAction'
+import { pathAction, fileUpload, fileDownload } from '@dr-js/node/module/server/feature/Explorer/client'
 
 const loadPackageList = ({
   pathPackageJSON,
