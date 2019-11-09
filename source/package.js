@@ -7,9 +7,9 @@ import { compareSemVer } from '@dr-js/core/module/common/module/SemVer'
 
 import { visibleAsync } from '@dr-js/core/module/node/file/function'
 import { toPosixPath } from '@dr-js/core/module/node/file/Path'
-import { modifyMove } from '@dr-js/core/module/node/file/Modify'
+import { modifyRename } from '@dr-js/core/module/node/file/Modify'
 
-import { PATH_ACTION_TYPE } from '@dr-js/node/module/module/PathAction'
+import { PATH_ACTION_TYPE } from '@dr-js/node/module/module/PathAction/base'
 import { pathAction, fileUpload, fileDownload } from '@dr-js/node/module/server/feature/Explorer/client'
 
 const loadPackageList = ({
@@ -172,7 +172,7 @@ const downloadPackage = async ({
     else {
       const fileTempPath = `${localPath}_temp_${Date.now().toString(36)}`
       await fileDownload({ fileOutputPath: fileTempPath, key: serverPath, urlFileDownload, timeout, authFetch, log })
-      await modifyMove(fileTempPath, localPath)
+      await modifyRename(fileTempPath, localPath)
       log(tag, `done ${packageName}: ${packagePath}`)
     }
   }

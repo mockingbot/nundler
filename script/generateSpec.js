@@ -40,7 +40,7 @@ runMain(async (logger) => {
     execSync('npm run script-delete-temp-build-file', { cwd: fromRoot(), stdio: 'ignore', shell: true })
   }
 
-  logger.log(`generate exportInfoMap`)
+  logger.padLog(`generate exportInfoMap`)
   const sourceRouteMap = await collectSourceRouteMap({ pathRootList: [ fromRoot('source') ], logger })
   const exportInfoMap = generateExportInfo({ sourceRouteMap })
 
@@ -65,4 +65,4 @@ runMain(async (logger) => {
 
   logger.log(`output: ${PATH_FILE_DELETE_CONFIG_RAW}`)
   generateTempFile({ sourceRouteMap, logger })
-}, 'generate-export')
+}, 'generate-spec')

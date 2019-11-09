@@ -7,21 +7,21 @@
 
 Not bundler
 
-[i:npm]: https://img.shields.io/npm/v/nundler.svg?colorB=blue
-[i:npm-dev]: https://img.shields.io/npm/v/nundler/dev.svg
+[i:npm]: https://img.shields.io/npm/v/nundler?colorB=blue
+[i:npm-dev]: https://img.shields.io/npm/v/nundler/dev
 [l:npm]: https://npm.im/nundler
-[i:ci]: https://img.shields.io/travis/mockingbot/nundler/master.svg
-[l:ci]: https://travis-ci.org/mockingbot/nundler
+[i:ci]: https://img.shields.io/github/workflow/status/mockingbot/nundler/ci-test
+[l:ci]: https://github.com/mockingbot/nundler/actions?query=workflow:ci-test
 [i:size]: https://packagephobia.now.sh/badge?p=nundler
 [l:size]: https://packagephobia.now.sh/result?p=nundler
 
 [//]: # (NON_PACKAGE_CONTENT)
 
-- 📁 [source](source)
+- 📁 [source/](source/)
   - main source code
-- 📁 [source-bin](source-bin)
+- 📁 [source-bin/](source-bin/)
   - bin source code
-- 📁 [example](example)
+- 📁 [example/](example/)
   - example file for test
 - 📄 [SPEC.md](SPEC.md)
   - list of all directly accessible codes, sort of an API lockfile
