@@ -105,12 +105,10 @@ const runMode = async (modeName, { tryGet, tryGetFirst, get, getFirst }) => {
   }
 }
 
-const logJSON = (value) => console.log(JSON.stringify(value, null, 2))
-
 const main = async () => {
   const optionData = await parseOption()
-  if (optionData.tryGet('version')) return logJSON({ packageName, packageVersion })
-  if (optionData.tryGet('help')) return logJSON(formatUsage())
+  if (optionData.tryGet('version')) return console.log(JSON.stringify({ packageName, packageVersion }, null, 2))
+  if (optionData.tryGet('help')) return console.log(formatUsage())
   const modeName = MODE_NAME_LIST.find((name) => optionData.tryGet(name))
   if (!modeName) throw new Error('no mode specified')
   await runMode(modeName, optionData).catch((error) => {

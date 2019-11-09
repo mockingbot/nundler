@@ -13,7 +13,7 @@ const PATH_ROOT = resolve(__dirname, '..')
 const PATH_OUTPUT = resolve(__dirname, '../output-gitignore')
 const fromRoot = (...args) => resolve(PATH_ROOT, ...args)
 const fromOutput = (...args) => resolve(PATH_OUTPUT, ...args)
-const execOptionRoot = { cwd: fromRoot(), stdio: argvFlag('quiet') ? [ 'ignore', 'ignore', 'inherit' ] : 'inherit', shell: true }
+const execShell = (command) => execSync(command, { cwd: fromRoot(), stdio: argvFlag('quiet') ? [ 'ignore', 'ignore', 'inherit' ] : 'inherit' })
 
 runMain(async (logger) => {
   const { padLog } = logger
@@ -22,25 +22,25 @@ runMain(async (logger) => {
 
   if (!argvFlag('pack')) return
   if (argvFlag('test', 'publish', 'publish-dev')) {
-    padLog(`lint source`)
-    execSync('npm run lint', execOptionRoot)
+    padLog('lint source')
+    execShell('npm run lint')
   }
 
   padLog('generate spec')
-  execSync(`npm run script-generate-spec`, execOptionRoot)
+  execShell('npm run script-generate-spec')
 
-  padLog(`build library`)
-  execSync('npm run build-library', execOptionRoot)
+  padLog('build library')
+  execShell('npm run build-library')
 
-  padLog(`build bin`)
-  execSync('npm run build-bin', execOptionRoot)
+  padLog('build bin')
+  execShell('npm run build-bin')
 
-  padLog(`delete temp build file`)
-  execSync('npm run script-delete-temp-build-file', execOptionRoot)
+  padLog('delete temp build file')
+  execShell('npm run script-delete-temp-build-file')
 
   const fileList = await getScriptFileListFromPathList([ '.' ], fromOutput)
 
-  padLog(`process output`)
+  padLog('process output')
   let sizeReduce = 0
   sizeReduce += await processFileList({ fileList, processor: fileProcessorBabel, rootPath: PATH_OUTPUT, logger })
   sizeReduce += await processFileList({ fileList, processor: fileProcessorWebpack, rootPath: PATH_OUTPUT, logger })
@@ -54,8 +54,8 @@ runMain(async (logger) => {
   await verifyOutputBinVersion({ fromOutput, packageJSON, logger })
 
   if (argvFlag('test', 'publish', 'publish-dev')) {
-    padLog(`test example`)
-    execSync('npm run test-example', execOptionRoot)
+    padLog('test example')
+    execShell('npm run test-example')
   }
 
   const pathPackagePack = await packOutput({ fromRoot, fromOutput, logger })

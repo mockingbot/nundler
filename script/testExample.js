@@ -9,11 +9,10 @@ import { run } from '@dr-js/core/module/node/system/Run'
 import { getGitBranch, getGitCommitHash } from '@dr-js/node/module/module/Software/git'
 
 import { withRunBackground } from '@dr-js/dev/module/node/run'
-import { runMain, argvFlag } from '@dr-js/dev/module/main'
+import { runMain } from '@dr-js/dev/module/main'
 
 const PATH_ROOT = resolve(__dirname, '..')
 const fromRoot = (...args) => resolve(PATH_ROOT, ...args)
-const execOptionRoot = { cwd: fromRoot(), stdio: argvFlag('quiet') ? [ 'ignore', 'ignore', 'inherit' ] : 'inherit', shell: true }
 
 const getExampleFileStat = async (examplePath) => statAsync(fromRoot('example', examplePath))
 const verifyExampleFileExist = async (title, examplePath) => strictEqual(
@@ -22,7 +21,7 @@ const verifyExampleFileExist = async (title, examplePath) => strictEqual(
   `[${title}] should file exist: ${examplePath}`
 )
 const runWithOutputString = async (command) => {
-  const { promise, stdoutPromise } = run({ command, option: { ...execOptionRoot, stdio: [ 'ignore', 'pipe', 'pipe' ] }, quiet: true })
+  const { promise, stdoutPromise } = run({ command, option: { cwd: fromRoot(), stdio: [ 'ignore', 'pipe', 'pipe' ], shell: true }, quiet: true })
   await promise
   const outputString = String(await stdoutPromise)
   console.log(indentLine(outputString, '  > '))
@@ -37,7 +36,7 @@ runMain(async ({ padLog, stepLog }) => {
   padLog('start example server')
   await withRunBackground({
     command: 'npm run example-start-server',
-    option: { ...execOptionRoot, stdio: 'ignore' }
+    option: { cwd: fromRoot(), stdio: 'ignore', shell: true }
   }, async () => {
     stepLog('start example server done')
 
