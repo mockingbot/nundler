@@ -1,15 +1,22 @@
 {
   "directory": true,
   "directoryPackInfo": [
-    "{git-branch}",
-    "{git-commit-hash}",
-    "{date-iso}",
+    "{no-change}",
+    "{url-host}",
+    "{timestamp}", "{time-iso}", "{date-iso}", "{time-b36}", "{time-base36}",
+    "{random}",
+    "{git-branch}", "{git-commit-hash}",
     "some random note {git-branch} {git-commit-hash} {date-iso}",
     "some other random note {git-branch} {git-commit-hash} {date-iso}"
   ],
   "use7z": true,
   "upload": true,
-  "urlFileUpload": "http://localhost:18080/file-chunk-upload",
+  "urlHostList": [
+    "http://localhost:18080",
+    "https://localhost:18080",
+    "http://noop.localhost:80"
+  ],
+  "urlFileUpload": "{url-host}/file-chunk-upload",
   "uploadDirectory": "./sample-7z-directory-gitignore",
   "uploadKey": "test-upload/test-7z-directory-{git-branch}-{git-commit-hash}.7z",
   "authFile": "./example-gitignore.key"

@@ -28,8 +28,11 @@
 >       less log
 >   --version --v -v [OPTIONAL] [ARGUMENT=0+]
 >       show version
->   --magic-key [OPTIONAL] [ARGUMENT=0+]
->       enable replace "{git-branch/git-commit-hash/timestamp/date-iso}" to current value in list/upload/download key name & directory-pack-info
+>   --keep-mark [OPTIONAL] [ARGUMENT=0+]
+>       do not replace mark in list/upload/download key name, directory-pack-info & url-*:
+>         "{timestamp|time-iso|date-iso|time-b36|time-base36|random|git-branch|git-commit-hash}"
+>   --url-host-list [OPTIONAL] [ARGUMENT=1+]
+>       tcp ping test for the fastest host and replace "{url-host}" in url-* option
 >   --auth-file [ARGUMENT=1]
 >       path to auth file
 >   --auth-key [OPTIONAL] [ARGUMENT=1]
@@ -45,7 +48,7 @@
 >   --directory --DIR [OPTIONAL] [ARGUMENT=0+]
 >       enable [DIRECTORY] mode, pack directory as ".tgz/.7z" file in server, require "tar" command
 >     --directory-pack-info [ARGUMENT=1+]
->         extra info to add to PACK_INFO for ".tgz/.7z" file, default to "{date-iso}"
+>         extra info to add to PACK_INFO for ".tgz/.7z" file, default to "{time-iso}"
 >     --trim-gz [ARGUMENT=0+]
 >         delete ".gz" file with source on upload, re-generate ".gz" file on download, will generate PACK_TRIM_GZ file
 >     --use-7z [ARGUMENT=0+]
@@ -86,7 +89,8 @@
 >     export NUNDLER_HELP="[OPTIONAL] [ARGUMENT=0+]"
 >     export NUNDLER_QUIET="[OPTIONAL] [ARGUMENT=0+]"
 >     export NUNDLER_VERSION="[OPTIONAL] [ARGUMENT=0+]"
->     export NUNDLER_MAGIC_KEY="[OPTIONAL] [ARGUMENT=0+]"
+>     export NUNDLER_KEEP_MARK="[OPTIONAL] [ARGUMENT=0+]"
+>     export NUNDLER_URL_HOST_LIST="[OPTIONAL] [ARGUMENT=1+]"
 >     export NUNDLER_AUTH_FILE="[ARGUMENT=1]"
 >     export NUNDLER_AUTH_KEY="[OPTIONAL] [ARGUMENT=1]"
 >     export NUNDLER_TIMEOUT="[OPTIONAL] [ARGUMENT=1]"
@@ -117,7 +121,8 @@
 >     "help": [ "[OPTIONAL] [ARGUMENT=0+]" ],
 >     "quiet": [ "[OPTIONAL] [ARGUMENT=0+]" ],
 >     "version": [ "[OPTIONAL] [ARGUMENT=0+]" ],
->     "magicKey": [ "[OPTIONAL] [ARGUMENT=0+]" ],
+>     "keepMark": [ "[OPTIONAL] [ARGUMENT=0+]" ],
+>     "urlHostList": [ "[OPTIONAL] [ARGUMENT=1+]" ],
 >     "authFile": [ "[ARGUMENT=1]" ],
 >     "authKey": [ "[OPTIONAL] [ARGUMENT=1]" ],
 >     "timeout": [ "[OPTIONAL] [ARGUMENT=1]" ],

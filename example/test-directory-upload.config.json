@@ -1,9 +1,11 @@
 {
   "directory": true,
   "directoryPackInfo": [
-    "{git-branch}",
-    "{git-commit-hash}",
-    "{date-iso}",
+    "{no-change}",
+    "{url-host}",
+    "{timestamp}", "{time-iso}", "{date-iso}", "{time-b36}", "{time-base36}",
+    "{random}",
+    "{git-branch}", "{git-commit-hash}",
     "some random note {git-branch} {git-commit-hash} {date-iso}",
     "some other random note {git-branch} {git-commit-hash} {date-iso}"
   ],

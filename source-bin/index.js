@@ -7,7 +7,7 @@ import {
   loadPackageList, listPackage, uploadPackage, downloadPackage
 } from 'source'
 
-import { configureAuthFile, dispelMagicString } from './function'
+import { createMarkReplacer, generateMarkMap, configureAuthFile, pingRaceUrlList } from './function'
 import { FILE_PACK_INFO, FILE_PACK_TRIM_GZ, MODE_NAME_LIST, parseOption, formatUsage } from './option'
 import { name as packageName, version as packageVersion } from '../package.json'
 
@@ -22,9 +22,20 @@ const runMode = async (modeName, { tryGet, tryGetFirst, get, getFirst }) => {
     ? () => {}
     : (...args) => console.log(...args, `(${time(clock() - timeStart)})`)
 
-  log(`[${packageName}@${packageVersion}] mode: ${modeName}, timeout: ${timeout}`)
-
   const commonOption = { timeout, authFetch, log, filePackInfo: FILE_PACK_INFO, filePackTrimGz: FILE_PACK_TRIM_GZ }
+  let urlHost
+  let markReplacer = (string) => string
+  if (!tryGet('keep-mark')) {
+    const urlHostList = tryGet('url-host-list')
+    if (urlHostList) urlHost = urlHostList.length < 2 ? urlHostList[ 0 ] : await pingRaceUrlList(tryGet('url-host-list'), { timeout: 5 * 1000 })
+    markReplacer = createMarkReplacer(generateMarkMap({ 'url-host': urlHost }))
+  }
+
+  log(`[${packageName}@${packageVersion}]`, [
+    `mode: ${modeName}`,
+    `timeout: ${timeout}`,
+    urlHost && `url-host: ${urlHost}`
+  ].filter(Boolean).join(', '))
 
   const isPackageMode = tryGet('package-json')
   const isDirectoryMode = tryGet('directory')
@@ -38,22 +49,22 @@ const runMode = async (modeName, { tryGet, tryGetFirst, get, getFirst }) => {
       switch (modeName) {
         case 'list':
           await listPackage({
-            urlPathAction: getFirst('url-path-action'),
+            urlPathAction: markReplacer(getFirst('url-path-action')),
             packageList,
             ...commonOption
           })
           break
         case 'upload':
           await uploadPackage({
-            urlFileUpload: getFirst('url-file-upload'),
-            urlPathAction: getFirst('url-path-action'),
+            urlFileUpload: markReplacer(getFirst('url-file-upload')),
+            urlPathAction: markReplacer(getFirst('url-path-action')),
             packageList,
             ...commonOption
           })
           break
         case 'download':
           await downloadPackage({
-            urlFileDownload: getFirst('url-file-download'),
+            urlFileDownload: markReplacer(getFirst('url-file-download')),
             packageList,
             ...commonOption
           })
@@ -71,17 +82,17 @@ const runMode = async (modeName, { tryGet, tryGetFirst, get, getFirst }) => {
   switch (modeName) {
     case 'list':
       return listFile({
-        urlPathAction: getFirst('url-path-action'),
-        listKeyPrefix: dispelMagicString(tryGetFirst('list-key-prefix') || ''),
+        urlPathAction: markReplacer(getFirst('url-path-action')),
+        listKeyPrefix: markReplacer(tryGetFirst('list-key-prefix') || ''),
         ...commonOption
       })
     case 'upload': {
-      commonOption.urlFileUpload = getFirst('url-file-upload')
-      commonOption.key = dispelMagicString(getFirst('upload-key'))
+      commonOption.urlFileUpload = markReplacer(getFirst('url-file-upload'))
+      commonOption.key = markReplacer(getFirst('upload-key'))
       return isDirectoryMode
         ? uploadDirectory({
           directoryInputPath: getFirst('upload-directory'),
-          infoString: dispelMagicString((tryGet('directory-pack-info') || [ '{date-iso}' ]).join('\n')),
+          infoString: markReplacer((tryGet('directory-pack-info') || [ '{time-iso}' ]).join('\n')),
           ...commonOption
         })
         : uploadFile({
@@ -90,8 +101,8 @@ const runMode = async (modeName, { tryGet, tryGetFirst, get, getFirst }) => {
         })
     }
     case 'download': {
-      commonOption.urlFileDownload = getFirst('url-file-download')
-      commonOption.key = dispelMagicString(getFirst('download-key'))
+      commonOption.urlFileDownload = markReplacer(getFirst('url-file-download'))
+      commonOption.key = markReplacer(getFirst('download-key'))
       return isDirectoryMode
         ? downloadDirectory({
           directoryOutputPath: getFirst('download-directory'),

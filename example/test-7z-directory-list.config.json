@@ -1,7 +1,12 @@
 {
   "directory": true,
   "list": true,
-  "urlPathAction": "http://localhost:18080/path-action",
+  "urlHostList": [
+    "http://localhost:18080",
+    "https://localhost:18080",
+    "http://noop.localhost:80"
+  ],
+  "urlPathAction": "{url-host}/path-action",
   "listKeyPrefix": "",
   "authFile": "./example-gitignore.key"
 }

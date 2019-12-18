@@ -1,23 +1,32 @@
 import { getTimestamp } from '@dr-js/core/module/common/time'
+import { createMarkReplacer } from '@dr-js/core/module/common/string'
 import { configureAuthFile } from '@dr-js/node/module/module/Auth'
+import { pingRaceUrlList } from '@dr-js/node/module/module/PingRace'
 import { getGitBranch, getGitCommitHash } from '@dr-js/node/module/module/Software/git'
 
-const cacheValue = (func, value) => () => {
-  if (value === undefined) value = func() // TODO: NOTE: func should not return undefined
-  return value
-}
-const getGitBranchCached = cacheValue(() => getGitBranch() || 'unknown-branch')
-const getGitCommitHashCached = cacheValue(() => getGitCommitHash() || 'unknown-commit-hash')
-const getTimestampCached = cacheValue(getTimestamp)
-const getDateISOCached = cacheValue(() => new Date().toISOString())
-
-const dispelMagicString = (string = '') => string
-  .replace(/{git-branch}/g, getGitBranchCached)
-  .replace(/{git-commit-hash}/g, getGitCommitHashCached)
-  .replace(/{timestamp}/g, getTimestampCached)
-  .replace(/{date-iso}/g, getDateISOCached)
+const generateMarkMap = ({
+  dateObject = new Date(),
+  timeISO = dateObject.toISOString(),
+  timeBase36 = dateObject.getTime().toString(36),
+  isEnableGit = true,
+  ...extraMark
+} = {}) => ({
+  // time
+  'timestamp': String(getTimestamp()),
+  'time-iso': timeISO,
+  'date-iso': timeISO,
+  'time-b36': timeBase36,
+  'time-base36': timeBase36,
+  // random
+  'random': Math.random().toString(36).slice(2, 10),
+  // git
+  'git-branch': (isEnableGit && getGitBranch()) || 'unknown-branch',
+  'git-commit-hash': (isEnableGit && getGitCommitHash()) || 'unknown-commit-hash',
+  ...extraMark
+})
 
 export {
+  createMarkReplacer, generateMarkMap,
   configureAuthFile,
-  dispelMagicString
+  pingRaceUrlList
 }

@@ -83,7 +83,7 @@ const downloadDirectory = async ({
 
   if (isTrimGz) {
     try {
-      const trimFileList = JSON.parse(await readFileAsync(resolve(directoryOutputPath, filePackTrimGz)))
+      const trimFileList = JSON.parse(String(await readFileAsync(resolve(directoryOutputPath, filePackTrimGz))))
       for (const file of trimFileList) {
         const inputFile = resolve(directoryOutputPath, file)
         await compressFile(inputFile, `${inputFile}.gz`)

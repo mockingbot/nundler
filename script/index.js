@@ -40,15 +40,14 @@ runMain(async (logger) => {
   if (!argvFlag('pack')) return
   await buildOutput({ logger })
   await processOutput({ logger })
-  if (argvFlag('test', 'publish', 'publish-dev')) {
-    logger.padLog('lint source')
-    execShell('npm run lint')
-    await processOutput({ logger }) // once more
-    logger.padLog('test example')
-    execShell('npm run test-example')
-  }
+  const isTest = argvFlag('test', 'publish', 'publish-dev')
+  isTest && logger.padLog('lint source')
+  isTest && execShell('npm run lint')
+  isTest && await processOutput({ logger }) // once more
+  isTest && logger.padLog('test example')
+  isTest && execShell('npm run test-example')
   await verifyOutputBin({ fromOutput, packageJSON, logger })
-  await verifyGitStatusClean({ fromRoot, logger })
+  isTest && await verifyGitStatusClean({ fromRoot, logger })
   const pathPackagePack = await packOutput({ fromRoot, fromOutput, logger })
   await publishOutput({ flagList: process.argv, packageJSON, pathPackagePack, extraArgs: [ '--userconfig', '~/mockingbot.npmrc' ], logger })
 })

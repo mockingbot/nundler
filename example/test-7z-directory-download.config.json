@@ -2,7 +2,12 @@
   "directory": true,
   "use7z": true,
   "download": true,
-  "urlFileDownload": "http://localhost:18080/file-serve",
+  "urlHostList": [
+    "http://localhost:18080",
+    "https://localhost:18080",
+    "http://noop.localhost:80"
+  ],
+  "urlFileDownload": "{url-host}/file-serve",
   "downloadDirectory": "./server-root-gitignore/test-7z-download/test-directory",
   "downloadKey": "test-upload/test-7z-directory-{git-branch}-{git-commit-hash}.7z",
   "authFile": "./example-gitignore.key"
