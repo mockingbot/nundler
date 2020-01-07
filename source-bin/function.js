@@ -1,7 +1,7 @@
 import { getTimestamp } from '@dr-js/core/module/common/time'
 import { createMarkReplacer } from '@dr-js/core/module/common/string'
 import { configureAuthFile } from '@dr-js/node/module/module/Auth'
-import { pingRaceUrlList } from '@dr-js/node/module/module/PingRace'
+import { pingRaceUrlList, pingStatUrlList } from '@dr-js/node/module/module/PingRace'
 import { getGitBranch, getGitCommitHash } from '@dr-js/node/module/module/Software/git'
 
 const generateMarkMap = ({
@@ -28,5 +28,5 @@ const generateMarkMap = ({
 export {
   createMarkReplacer, generateMarkMap,
   configureAuthFile,
-  pingRaceUrlList
+  pingRaceUrlList, pingStatUrlList
 }

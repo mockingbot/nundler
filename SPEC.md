@@ -31,9 +31,9 @@
 >   --keep-mark [OPTIONAL] [ARGUMENT=0+]
 >       do not replace mark in list/upload/download key name, directory-pack-info & url-*:
 >         "{timestamp|time-iso|date-iso|time-b36|time-base36|random|git-branch|git-commit-hash}"
->   --url-host-list [OPTIONAL] [ARGUMENT=1+]
+>   --url-host-list --uhl [OPTIONAL] [ARGUMENT=1+]
 >       tcp ping test for the fastest host and replace "{url-host}" in url-* option
->   --auth-file [ARGUMENT=1]
+>   --auth-file [OPTIONAL] [ARGUMENT=1]
 >       path to auth file
 >   --auth-key [OPTIONAL] [ARGUMENT=1]
 >       auth key, of not use default
@@ -82,6 +82,10 @@
 >           for [FILE] mode
 >       --download-directory [ARGUMENT=1]
 >           for [DIRECTORY] mode
+>   --ping-host --ph [OPTIONAL] [ARGUMENT=0+]
+>       ping "url-host-list", print fastest host and exit
+>   --ping-host-stat --phs [OPTIONAL] [ARGUMENT=0+]
+>       ping "url-host-list", print stat and exit
 > ENV Usage:
 >   "
 >     #!/usr/bin/env bash
@@ -91,7 +95,7 @@
 >     export NUNDLER_VERSION="[OPTIONAL] [ARGUMENT=0+]"
 >     export NUNDLER_KEEP_MARK="[OPTIONAL] [ARGUMENT=0+]"
 >     export NUNDLER_URL_HOST_LIST="[OPTIONAL] [ARGUMENT=1+]"
->     export NUNDLER_AUTH_FILE="[ARGUMENT=1]"
+>     export NUNDLER_AUTH_FILE="[OPTIONAL] [ARGUMENT=1]"
 >     export NUNDLER_AUTH_KEY="[OPTIONAL] [ARGUMENT=1]"
 >     export NUNDLER_TIMEOUT="[OPTIONAL] [ARGUMENT=1]"
 >     export NUNDLER_PACKAGE_JSON="[OPTIONAL] [ARGUMENT=1+]"
@@ -114,6 +118,8 @@
 >     export NUNDLER_DOWNLOAD_KEY="[ARGUMENT=1]"
 >     export NUNDLER_DOWNLOAD_FILE="[ARGUMENT=1]"
 >     export NUNDLER_DOWNLOAD_DIRECTORY="[ARGUMENT=1]"
+>     export NUNDLER_PING_HOST="[OPTIONAL] [ARGUMENT=0+]"
+>     export NUNDLER_PING_HOST_STAT="[OPTIONAL] [ARGUMENT=0+]"
 >   "
 > CONFIG Usage:
 >   {
@@ -123,7 +129,7 @@
 >     "version": [ "[OPTIONAL] [ARGUMENT=0+]" ],
 >     "keepMark": [ "[OPTIONAL] [ARGUMENT=0+]" ],
 >     "urlHostList": [ "[OPTIONAL] [ARGUMENT=1+]" ],
->     "authFile": [ "[ARGUMENT=1]" ],
+>     "authFile": [ "[OPTIONAL] [ARGUMENT=1]" ],
 >     "authKey": [ "[OPTIONAL] [ARGUMENT=1]" ],
 >     "timeout": [ "[OPTIONAL] [ARGUMENT=1]" ],
 >     "packageJson": [ "[OPTIONAL] [ARGUMENT=1+]" ],
@@ -146,5 +152,7 @@
 >     "downloadKey": [ "[ARGUMENT=1]" ],
 >     "downloadFile": [ "[ARGUMENT=1]" ],
 >     "downloadDirectory": [ "[ARGUMENT=1]" ],
+>     "pingHost": [ "[OPTIONAL] [ARGUMENT=0+]" ],
+>     "pingHostStat": [ "[OPTIONAL] [ARGUMENT=0+]" ],
 >   }
 > ```

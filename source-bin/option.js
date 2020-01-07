@@ -1,4 +1,4 @@
-import { Preset, getOptionalFormatFlag, prepareOption } from '@dr-js/core/module/node/module/Option/preset'
+import { Preset, prepareOption } from '@dr-js/core/module/node/module/Option/preset'
 import { generateMarkMap } from './function'
 
 const { Config, parseCompactList } = Preset
@@ -39,7 +39,9 @@ const MODE_FORMAT_LIST = parseCompactList(
       'download-file/SP,O|for [FILE] mode',
       'download-directory/SP,O|for [DIRECTORY] mode'
     ) ]
-  ) ]
+  ) ],
+  'ping-host,ph/T|ping "url-host-list", print fastest host and exit',
+  'ping-host-stat,phs/T|ping "url-host-list", print stat and exit'
 )
 const MODE_NAME_LIST = MODE_FORMAT_LIST.map(({ name }) => name)
 
@@ -53,9 +55,9 @@ const OPTION_CONFIG = {
       'version,v/T|show version',
 
       `keep-mark/T,O|do not replace mark in list/upload/download key name, directory-pack-info & url-*:\n  "{${Object.keys(generateMarkMap()).join('|')}}"`,
-      'url-host-list/AS,O|tcp ping test for the fastest host and replace "{url-host}" in url-* option',
+      'url-host-list,uhl/AS,O|tcp ping test for the fastest host and replace "{url-host}" in url-* option',
 
-      [ 'auth-file/SP|path to auth file', { optional: getOptionalFormatFlag(...MODE_NAME_LIST) } ],
+      [ 'auth-file/SP,O|path to auth file' ],
       'auth-key/SS,O|auth key, of not use default',
       'timeout/SI,O|set timeout, default to 0 (no timeout)',
 

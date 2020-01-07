@@ -7,38 +7,40 @@ import {
   loadPackageList, listPackage, uploadPackage, downloadPackage
 } from 'source'
 
-import { createMarkReplacer, generateMarkMap, configureAuthFile, pingRaceUrlList } from './function'
+import { createMarkReplacer, generateMarkMap, configureAuthFile, pingRaceUrlList, pingStatUrlList } from './function'
 import { FILE_PACK_INFO, FILE_PACK_TRIM_GZ, MODE_NAME_LIST, parseOption, formatUsage } from './option'
 import { name as packageName, version as packageVersion } from '../package.json'
 
 const runMode = async (modeName, { tryGet, tryGetFirst, get, getFirst }) => {
-  const timeout = tryGetFirst('timeout') || 0
-  const { authFetch } = await configureAuthFile({
-    authFile: getFirst('auth-file'),
-    authKey: tryGetFirst('auth-key')
-  })
+  if (tryGet('ping-host')) return console.log(await pingRaceUrlList(tryGet('url-host-list')))
+  if (tryGet('ping-host-stat')) return console.log(JSON.stringify(await pingStatUrlList(tryGet('url-host-list')), null, 2))
+
   const timeStart = clock()
   const log = tryGet('quiet')
     ? () => {}
     : (...args) => console.log(...args, `(${time(clock() - timeStart)})`)
 
-  const commonOption = { timeout, authFetch, log, filePackInfo: FILE_PACK_INFO, filePackTrimGz: FILE_PACK_TRIM_GZ }
+  const isPackageMode = tryGet('package-json')
+  const isDirectoryMode = tryGet('directory')
+  const timeout = tryGetFirst('timeout') || 0
+  const { authFetch } = await configureAuthFile({
+    authFile: getFirst('auth-file'),
+    authKey: tryGetFirst('auth-key')
+  })
   let urlHost
   let markReplacer = (string) => string
   if (!tryGet('keep-mark')) {
     const urlHostList = tryGet('url-host-list')
-    if (urlHostList) urlHost = urlHostList.length < 2 ? urlHostList[ 0 ] : await pingRaceUrlList(tryGet('url-host-list'), { timeout: 5 * 1000 })
+    if (urlHostList) urlHost = await pingRaceUrlList(urlHostList)
     markReplacer = createMarkReplacer(generateMarkMap({ 'url-host': urlHost }))
   }
+  const commonOption = { timeout, authFetch, log, filePackInfo: FILE_PACK_INFO, filePackTrimGz: FILE_PACK_TRIM_GZ }
 
   log(`[${packageName}@${packageVersion}]`, [
     `mode: ${modeName}`,
     `timeout: ${timeout}`,
     urlHost && `url-host: ${urlHost}`
   ].filter(Boolean).join(', '))
-
-  const isPackageMode = tryGet('package-json')
-  const isDirectoryMode = tryGet('directory')
 
   if (isPackageMode) {
     const pathPackageJSONList = get('package-json')
