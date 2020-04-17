@@ -21,7 +21,7 @@ const listFile = async ({
     timeout,
     authFetch
   })
-  __DEV__ && console.log(`[listPackage]`, { listKeyPrefix, key, fileList })
+  __DEV__ && console.log('[listPackage]', { listKeyPrefix, key, fileList })
 
   log(`[List] listKeyPrefix: ${listKeyPrefix}\n${indentLine(padTable({
     table: [

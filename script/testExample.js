@@ -1,8 +1,8 @@
 import { resolve } from 'path'
+import { existsSync, statSync, renameSync } from 'fs'
 
 import { indentLine } from '@dr-js/core/module/common/string'
 import { strictEqual, stringifyEqual, notStrictEqual } from '@dr-js/core/module/common/verify'
-import { visibleAsync, statAsync } from '@dr-js/core/module/node/file/function'
 import { modifyDelete } from '@dr-js/core/module/node/file/Modify'
 import { run } from '@dr-js/core/module/node/system/Run'
 
@@ -14,9 +14,10 @@ import { runMain } from '@dr-js/dev/module/main'
 const PATH_ROOT = resolve(__dirname, '..')
 const fromRoot = (...args) => resolve(PATH_ROOT, ...args)
 
-const getExampleFileStat = async (examplePath) => statAsync(fromRoot('example', examplePath))
-const verifyExampleFileExist = async (title, examplePath) => strictEqual(
-  await visibleAsync(fromRoot('example', examplePath)),
+const getExampleFileStat = (examplePath) => statSync(fromRoot('example', examplePath))
+const renameExampleFile = (examplePath, examplePathRename) => renameSync(fromRoot('example', examplePath), fromRoot('example', examplePathRename))
+const verifyExampleFileExist = (title, examplePath) => strictEqual(
+  existsSync(fromRoot('example', examplePath)),
   true,
   `[${title}] should file exist: ${examplePath}`
 )
@@ -55,42 +56,42 @@ runMain(async ({ padLog, stepLog }) => {
     })
     await runTest('file-upload', async () => {
       await runWithOutputString('npm run example-file-upload')
-      await verifyExampleFileExist('upload', 'server-root-gitignore/test-upload/test-file')
+      verifyExampleFileExist('upload', 'server-root-gitignore/test-upload/test-file')
     })
     await runTest('file-upload (should rewrite)', async () => {
-      const statUpload = await getExampleFileStat('server-root-gitignore/test-upload/test-file')
+      const statUpload = getExampleFileStat('server-root-gitignore/test-upload/test-file')
       await runWithOutputString('npm run example-file-upload')
-      const statUploadAgain = await getExampleFileStat('server-root-gitignore/test-upload/test-file')
+      const statUploadAgain = getExampleFileStat('server-root-gitignore/test-upload/test-file')
       notStrictEqual(statUpload.mtimeMs, statUploadAgain.mtimeMs, '[file-upload] should upload file mtimeMs')
     })
     await runTest('file-download', async () => {
       await runWithOutputString('npm run example-file-download')
-      await verifyExampleFileExist('download', 'server-root-gitignore/test-download/test-file')
+      verifyExampleFileExist('download', 'server-root-gitignore/test-download/test-file')
     })
     await runTest('file-download (should rewrite)', async () => {
-      const statDownload = await getExampleFileStat('server-root-gitignore/test-download/test-file')
+      const statDownload = getExampleFileStat('server-root-gitignore/test-download/test-file')
       await runWithOutputString('npm run example-file-download')
-      const statDownloadAgain = await getExampleFileStat('server-root-gitignore/test-download/test-file')
+      const statDownloadAgain = getExampleFileStat('server-root-gitignore/test-download/test-file')
       notStrictEqual(statDownload.mtimeMs, statDownloadAgain.mtimeMs, '[file-download] should update file mtimeMs')
     })
 
     await runTest('package-download', async () => {
       await runWithOutputString('npm run example-package-download')
-      await verifyExampleFileExist('package-download', 'sample-package-gitignore/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz')
-      await verifyExampleFileExist('package-download', 'sample-package-gitignore/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz')
-      await verifyExampleFileExist('package-download', 'sample-package-gitignore/.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
+      verifyExampleFileExist('package-download', 'sample-package-gitignore/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz')
+      verifyExampleFileExist('package-download', 'sample-package-gitignore/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz')
+      verifyExampleFileExist('package-download', 'sample-package-gitignore/.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
     })
     await runTest('package-download (should skip)', async () => {
       const statPackageDownloadList = [
-        await getExampleFileStat('sample-package-gitignore/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'),
-        await getExampleFileStat('sample-package-gitignore/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'),
-        await getExampleFileStat('sample-package-gitignore/.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
+        getExampleFileStat('sample-package-gitignore/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'),
+        getExampleFileStat('sample-package-gitignore/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'),
+        getExampleFileStat('sample-package-gitignore/.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
       ]
       await runWithOutputString('npm run example-package-download')
       const statPackageDownloadAgainList = [
-        await getExampleFileStat('sample-package-gitignore/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'),
-        await getExampleFileStat('sample-package-gitignore/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'),
-        await getExampleFileStat('sample-package-gitignore/.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
+        getExampleFileStat('sample-package-gitignore/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'),
+        getExampleFileStat('sample-package-gitignore/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'),
+        getExampleFileStat('sample-package-gitignore/.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
       ]
       stringifyEqual(
         statPackageDownloadList.map(({ mtimeMs }) => mtimeMs),
@@ -102,13 +103,13 @@ runMain(async ({ padLog, stepLog }) => {
       await modifyDelete(fromRoot('example/server-root-gitignore/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz'))
       await modifyDelete(fromRoot('example/server-root-gitignore/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz'))
       await runWithOutputString('npm run example-package-upload')
-      await verifyExampleFileExist('package-download', 'server-root-gitignore/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz')
-      await verifyExampleFileExist('package-download', 'server-root-gitignore/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz')
+      verifyExampleFileExist('package-download', 'server-root-gitignore/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz')
+      verifyExampleFileExist('package-download', 'server-root-gitignore/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz')
     })
     await runTest('package-upload (should skip)', async () => {
-      const statUpload = await getExampleFileStat('server-root-gitignore/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz')
+      const statUpload = getExampleFileStat('server-root-gitignore/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz')
       await runWithOutputString('npm run example-package-upload')
-      const statUploadAgain = await getExampleFileStat('server-root-gitignore/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz')
+      const statUploadAgain = getExampleFileStat('server-root-gitignore/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz')
       strictEqual(statUpload.mtimeMs, statUploadAgain.mtimeMs, '[file-upload] should upload file mtimeMs')
     })
     await runTest('package-list', async () => {
@@ -156,23 +157,26 @@ runMain(async ({ padLog, stepLog }) => {
     })
     await runTest('directory-upload', async () => {
       await runWithOutputString('npm run example-directory-upload')
-      await verifyExampleFileExist('upload', `server-root-gitignore/test-upload/${directoryPackFile}`)
+      verifyExampleFileExist('upload', `server-root-gitignore/test-upload/${directoryPackFile}`)
     })
     await runTest('directory-upload (should rewrite)', async () => {
-      const statUpload = await getExampleFileStat(`server-root-gitignore/test-upload/${directoryPackFile}`)
+      const statUpload = getExampleFileStat(`server-root-gitignore/test-upload/${directoryPackFile}`)
       await runWithOutputString('npm run example-directory-upload')
-      const statUploadAgain = await getExampleFileStat(`server-root-gitignore/test-upload/${directoryPackFile}`)
+      const statUploadAgain = getExampleFileStat(`server-root-gitignore/test-upload/${directoryPackFile}`)
       notStrictEqual(statUpload.mtimeMs, statUploadAgain.mtimeMs, '[directory-upload] should upload directory mtimeMs')
     })
     await runTest('directory-download', async () => {
       await runWithOutputString('npm run example-directory-download')
-      await verifyExampleFileExist('download', `server-root-gitignore/test-download/test-directory`)
+      verifyExampleFileExist('download', 'server-root-gitignore/test-download/test-directory')
     })
-    await runTest('directory-download (should rewrite)', async () => {
-      const statDownload = await getExampleFileStat(`server-root-gitignore/test-download/test-directory`)
+    await runTest('directory-download (should merge)', async () => {
+      renameExampleFile(
+        'server-root-gitignore/test-download/test-directory/PACK_INFO',
+        'server-root-gitignore/test-download/test-directory/PACK_INFO-rename'
+      )
       await runWithOutputString('npm run example-directory-download')
-      const statDownloadAgain = await getExampleFileStat(`server-root-gitignore/test-download/test-directory`)
-      notStrictEqual(statDownload.mtimeMs, statDownloadAgain.mtimeMs, '[directory-download] should update directory mtimeMs')
+      verifyExampleFileExist('download-merge', 'server-root-gitignore/test-download/test-directory/PACK_INFO')
+      verifyExampleFileExist('download-merge', 'server-root-gitignore/test-download/test-directory/PACK_INFO-rename')
     })
 
     const gzDirectoryPackFile = `test-gz-directory-${getGitBranch()}-${getGitCommitHash()}.tgz`
@@ -186,25 +190,28 @@ runMain(async ({ padLog, stepLog }) => {
     })
     await runTest('gz-directory-upload', async () => {
       await runWithOutputString('npm run example-gz-directory-upload')
-      await verifyExampleFileExist('upload', `server-root-gitignore/test-upload/${gzDirectoryPackFile}`)
+      verifyExampleFileExist('upload', `server-root-gitignore/test-upload/${gzDirectoryPackFile}`)
     })
     await runTest('gz-directory-upload (should rewrite)', async () => {
-      const statUpload = await getExampleFileStat(`server-root-gitignore/test-upload/${gzDirectoryPackFile}`)
+      const statUpload = getExampleFileStat(`server-root-gitignore/test-upload/${gzDirectoryPackFile}`)
       await runWithOutputString('npm run example-gz-directory-upload')
-      const statUploadAgain = await getExampleFileStat(`server-root-gitignore/test-upload/${gzDirectoryPackFile}`)
+      const statUploadAgain = getExampleFileStat(`server-root-gitignore/test-upload/${gzDirectoryPackFile}`)
       notStrictEqual(statUpload.mtimeMs, statUploadAgain.mtimeMs, '[gz-directory-upload] should upload directory mtimeMs')
     })
     await runTest('gz-directory-download', async () => {
       await runWithOutputString('npm run example-gz-directory-download')
-      await verifyExampleFileExist('download', `server-root-gitignore/test-gz-download/test-directory`)
-      await verifyExampleFileExist('download', `server-root-gitignore/test-gz-download/test-directory/PACK_TRIM_GZ`)
-      await verifyExampleFileExist('download', `server-root-gitignore/test-gz-download/test-directory/package.json.gz`)
+      verifyExampleFileExist('download', 'server-root-gitignore/test-gz-download/test-directory')
+      verifyExampleFileExist('download', 'server-root-gitignore/test-gz-download/test-directory/PACK_TRIM_GZ')
+      verifyExampleFileExist('download', 'server-root-gitignore/test-gz-download/test-directory/package.json.gz')
     })
-    await runTest('gz-directory-download (should rewrite)', async () => {
-      const statDownload = await getExampleFileStat(`server-root-gitignore/test-gz-download/test-directory`)
+    await runTest('gz-directory-download (should merge)', async () => {
+      renameExampleFile(
+        'server-root-gitignore/test-gz-download/test-directory/PACK_INFO',
+        'server-root-gitignore/test-gz-download/test-directory/PACK_INFO-rename'
+      )
       await runWithOutputString('npm run example-gz-directory-download')
-      const statDownloadAgain = await getExampleFileStat(`server-root-gitignore/test-gz-download/test-directory`)
-      notStrictEqual(statDownload.mtimeMs, statDownloadAgain.mtimeMs, '[gz-directory-download] should update directory mtimeMs')
+      verifyExampleFileExist('download-merge', 'server-root-gitignore/test-gz-download/test-directory/PACK_INFO')
+      verifyExampleFileExist('download-merge', 'server-root-gitignore/test-gz-download/test-directory/PACK_INFO-rename')
     })
 
     const p7zDirectoryPackFile = `test-7z-directory-${getGitBranch()}-${getGitCommitHash()}.7z`
@@ -218,26 +225,29 @@ runMain(async ({ padLog, stepLog }) => {
     })
     await runTest('7z-directory-upload', async () => {
       await runWithOutputString('npm run example-7z-directory-upload')
-      await verifyExampleFileExist('upload', `server-root-gitignore/test-upload/${p7zDirectoryPackFile}`)
+      verifyExampleFileExist('upload', `server-root-gitignore/test-upload/${p7zDirectoryPackFile}`)
     })
     await runTest('7z-directory-upload (should rewrite)', async () => {
-      const statUpload = await getExampleFileStat(`server-root-gitignore/test-upload/${p7zDirectoryPackFile}`)
+      const statUpload = getExampleFileStat(`server-root-gitignore/test-upload/${p7zDirectoryPackFile}`)
       await runWithOutputString('npm run example-7z-directory-upload')
-      const statUploadAgain = await getExampleFileStat(`server-root-gitignore/test-upload/${p7zDirectoryPackFile}`)
+      const statUploadAgain = getExampleFileStat(`server-root-gitignore/test-upload/${p7zDirectoryPackFile}`)
       notStrictEqual(statUpload.mtimeMs, statUploadAgain.mtimeMs, '[7z-directory-upload] should upload directory mtimeMs')
     })
     await runTest('7z-directory-download', async () => {
       await runWithOutputString('npm run example-7z-directory-download')
-      await verifyExampleFileExist('download', `server-root-gitignore/test-7z-download/test-directory`)
+      verifyExampleFileExist('download', 'server-root-gitignore/test-7z-download/test-directory')
     })
-    await runTest('7z-directory-download (should rewrite)', async () => {
-      const statDownload = await getExampleFileStat(`server-root-gitignore/test-7z-download/test-directory`)
+    await runTest('7z-directory-download (should merge)', async () => {
+      renameExampleFile(
+        'server-root-gitignore/test-7z-download/test-directory/PACK_INFO',
+        'server-root-gitignore/test-7z-download/test-directory/PACK_INFO-rename'
+      )
       await runWithOutputString('npm run example-7z-directory-download')
-      const statDownloadAgain = await getExampleFileStat(`server-root-gitignore/test-7z-download/test-directory`)
-      notStrictEqual(statDownload.mtimeMs, statDownloadAgain.mtimeMs, '[7z-directory-download] should update directory mtimeMs')
+      verifyExampleFileExist('download-merge', 'server-root-gitignore/test-7z-download/test-directory/PACK_INFO')
+      verifyExampleFileExist('download-merge', 'server-root-gitignore/test-7z-download/test-directory/PACK_INFO-rename')
     })
 
     padLog('stop example server')
-  })
+  }, 1000) // wait 1sec for server to start up (mostly for GitHub Action win10 + nodejs@14)
   stepLog('stop example server done')
 }, 'test-example')

@@ -1,8 +1,8 @@
 import { resolve } from 'path'
 import { execSync } from 'child_process'
 
-import { getScriptFileListFromPathList } from '@dr-js/dev/module/node/file'
-import { initOutput, packOutput, verifyNoGitignore, verifyGitStatusClean, verifyOutputBin, publishOutput } from '@dr-js/dev/module/output'
+import { getSourceJsFileListFromPathList } from '@dr-js/dev/module/node/filePreset'
+import { initOutput, packOutput, clearOutput, verifyNoGitignore, verifyGitStatusClean, verifyOutputBin, publishOutput } from '@dr-js/dev/module/output'
 import { getTerserOption, minifyFileListWithTerser } from '@dr-js/dev/module/minify'
 import { processFileList, fileProcessorBabel, fileProcessorWebpack } from '@dr-js/dev/module/fileProcessor'
 import { runMain, argvFlag } from '@dr-js/dev/module/main'
@@ -14,7 +14,7 @@ const fromOutput = (...args) => resolve(PATH_OUTPUT, ...args)
 const execShell = (command) => execSync(command, { cwd: fromRoot(), stdio: argvFlag('quiet') ? [ 'ignore', 'ignore', 'inherit' ] : 'inherit' })
 
 const buildOutput = async ({ logger }) => {
-  logger.padLog('generate spec doc')
+  logger.padLog('generate spec')
   execShell('npm run script-generate-spec')
   logger.padLog('build library')
   execShell('npm run build-library')
@@ -25,12 +25,12 @@ const buildOutput = async ({ logger }) => {
 }
 
 const processOutput = async ({ logger }) => {
-  const fileList = await getScriptFileListFromPathList([ '.' ], fromOutput)
+  const fileList = await getSourceJsFileListFromPathList([ '.' ], fromOutput)
   let sizeReduce = 0
+  sizeReduce += await minifyFileListWithTerser({ fileList, option: getTerserOption(), rootPath: PATH_OUTPUT, logger })
   sizeReduce += await processFileList({ fileList, processor: fileProcessorBabel, rootPath: PATH_OUTPUT, logger })
   sizeReduce += await processFileList({ fileList, processor: fileProcessorWebpack, rootPath: PATH_OUTPUT, logger })
-  sizeReduce += await minifyFileListWithTerser({ fileList, option: getTerserOption(), rootPath: PATH_OUTPUT, logger })
-  logger.log(`library-babel size reduce: ${sizeReduce}B`)
+  logger.padLog(`size reduce: ${sizeReduce}B`)
 }
 
 runMain(async (logger) => {
@@ -46,6 +46,7 @@ runMain(async (logger) => {
   isTest && await processOutput({ logger }) // once more
   isTest && logger.padLog('test example')
   isTest && execShell('npm run test-example')
+  await clearOutput({ fromOutput, logger })
   await verifyOutputBin({ fromOutput, packageJSON, logger })
   isTest && await verifyGitStatusClean({ fromRoot, logger })
   const pathPackagePack = await packOutput({ fromRoot, fromOutput, logger })

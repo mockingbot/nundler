@@ -5,8 +5,7 @@ import { padTable } from '@dr-js/core/module/common/format'
 import { indentLine } from '@dr-js/core/module/common/string'
 import { compareSemVer } from '@dr-js/core/module/common/module/SemVer'
 
-import { visibleAsync } from '@dr-js/core/module/node/file/function'
-import { toPosixPath } from '@dr-js/core/module/node/file/Path'
+import { STAT_ERROR, getPathLstat, toPosixPath } from '@dr-js/core/module/node/file/Path'
 import { modifyRename } from '@dr-js/core/module/node/file/Modify'
 
 import { PATH_ACTION_TYPE } from '@dr-js/node/module/module/PathAction/base'
@@ -168,7 +167,7 @@ const downloadPackage = async ({
     const tag = `[PackageDownload|${index + 1}/${indexMax}]`
     const { packageName, packagePath, serverPath, localPath } = packageList[ index ]
 
-    if (await visibleAsync(localPath)) log(tag, `exist: ${packagePath}`)
+    if (STAT_ERROR !== await getPathLstat(localPath)) log(tag, `exist: ${packagePath}`)
     else {
       const fileTempPath = `${localPath}_temp_${Date.now().toString(36)}`
       await fileDownload({ fileOutputPath: fileTempPath, key: serverPath, urlFileDownload, timeout, authFetch, log })

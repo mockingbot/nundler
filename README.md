@@ -24,7 +24,7 @@ Not bundler
 - 📁 [example/](example/)
   - example file for test
 - 📄 [SPEC.md](SPEC.md)
-  - list of all directly accessible codes, sort of an API lockfile
+  - list of all directly accessible codes, sort of API lockfile
 
 
 #### Test example setup

@@ -1,10 +1,10 @@
 import { resolve, relative } from 'path'
+import { promises as fsAsync } from 'fs'
 
 import { indentLine } from '@dr-js/core/module/common/string'
 import { getRandomId } from '@dr-js/core/module/common/math/random'
 
-import { readFileAsync, writeFileAsync, visibleAsync } from '@dr-js/core/module/node/file/function'
-import { deletePath, toPosixPath } from '@dr-js/core/module/node/file/Path'
+import { STAT_ERROR, getPathLstat, deletePath, toPosixPath } from '@dr-js/core/module/node/file/Path'
 import { createDirectory, getFileList } from '@dr-js/core/module/node/file/Directory'
 import { run } from '@dr-js/core/module/node/system/Run'
 
@@ -32,7 +32,7 @@ const uploadDirectory = async ({
 }) => {
   isUse7z ? detect7z() : detectTar()
 
-  await writeFileAsync(resolve(directoryInputPath, filePackInfo), infoString)
+  await fsAsync.writeFile(resolve(directoryInputPath, filePackInfo), infoString)
   log(`[Upload] directory info:\n${indentLine(infoString)}`)
 
   if (isTrimGz) { // only pick .gz with original files
@@ -42,22 +42,22 @@ const uploadDirectory = async ({
     const trimFileGzList = [ ...fileGzSet ].filter((fileGz) => fileSourceSet.has(dropGz(fileGz)))
     if (trimFileGzList.length) {
       for (const fileGz of trimFileGzList) await deletePath(fileGz)
-      await writeFileAsync(
+      await fsAsync.writeFile(
         resolve(directoryInputPath, filePackTrimGz),
         JSON.stringify(trimFileGzList.map((fileGz) => toPosixPath(relative(directoryInputPath, dropGz(fileGz)))))
       )
       log(`[Upload] trim ".gz" file with source: ${trimFileGzList.length}`)
     } else {
-      const isPackTrimGzExist = await visibleAsync(resolve(directoryInputPath, filePackTrimGz))
+      const isPackTrimGzExist = STAT_ERROR !== await getPathLstat(resolve(directoryInputPath, filePackTrimGz))
       log(`[Upload] no ".gz" file with source trimmed, ${isPackTrimGzExist ? 're-use' : 'no'} existing ${filePackTrimGz}`)
     }
   }
 
   const tempFile = getTempFile()
   await run((isUse7z ? compressConfig7z : compressConfigTar)(directoryInputPath, tempFile)).promise
-  const fileBuffer = await readFileAsync(tempFile)
+  const fileBuffer = await fsAsync.readFile(tempFile)
   await deletePath(tempFile)
-  log(`[Upload] done pack`)
+  log('[Upload] done pack')
 
   return uploadFile({ ...fileOption, log, fileBuffer })
 }
@@ -79,20 +79,18 @@ const downloadDirectory = async ({
   await createDirectory(directoryOutputPath)
   await run((isUse7z ? extractConfig7z : extractConfigTar)(tempFile, directoryOutputPath)).promise
   await deletePath(tempFile)
-  log(`[Download] done unpack`)
+  log('[Download] done unpack')
 
   if (isTrimGz) {
-    try {
-      const trimFileList = JSON.parse(String(await readFileAsync(resolve(directoryOutputPath, filePackTrimGz))))
-      for (const file of trimFileList) {
-        const inputFile = resolve(directoryOutputPath, file)
-        await compressFile(inputFile, `${inputFile}.gz`)
-      }
-      log(`[Download] re-generate ".gz" file: ${trimFileList.length}`)
-    } catch (error) { console.warn(`[Error][Download] failed to re-generate ".gz" file: ${error}`) }
+    const trimFileList = JSON.parse(String(await fsAsync.readFile(resolve(directoryOutputPath, filePackTrimGz))))
+    for (const file of trimFileList) {
+      const inputFile = resolve(directoryOutputPath, file)
+      await compressFile(inputFile, `${inputFile}.gz`)
+    }
+    log(`[Download] re-generate ".gz" file: ${trimFileList.length}`)
   }
 
-  const infoString = String(await readFileAsync(resolve(directoryOutputPath, filePackInfo)))
+  const infoString = String(await fsAsync.readFile(resolve(directoryOutputPath, filePackInfo)))
   log(`[Download] directory info:\n${indentLine(infoString)}`)
 }
 

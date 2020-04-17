@@ -2,9 +2,9 @@ import { resolve, sep } from 'path'
 import { execSync } from 'child_process'
 import { writeFileSync, existsSync } from 'fs'
 
-import { collectSourceRouteMap } from '@dr-js/dev/module/node/export/parse'
-import { generateIndexScript, generateExportInfo } from '@dr-js/dev/module/node/export/generate'
-import { getMarkdownFileLink, renderMarkdownAutoAppendHeaderLink, renderMarkdownBlockQuote, renderMarkdownExportPath, renderMarkdownExportTree } from '@dr-js/dev/module/node/export/renderMarkdown'
+import { collectSourceJsRouteMap } from '@dr-js/dev/module/node/export/parsePreset'
+import { generateExportInfo, generateIndexScript } from '@dr-js/dev/module/node/export/generate'
+import { getMarkdownFileLink, renderMarkdownBlockQuote, renderMarkdownAutoAppendHeaderLink, renderMarkdownExportPath, renderMarkdownExportTree } from '@dr-js/dev/module/node/export/renderMarkdown'
 import { runMain } from '@dr-js/dev/module/main'
 
 import { formatUsage } from 'source-bin/option'
@@ -36,15 +36,15 @@ const generateTempFile = ({ sourceRouteMap, logger }) => {
 
 runMain(async (logger) => {
   if (existsSync(PATH_FILE_DELETE_CONFIG)) {
-    logger.padLog(`[clear] delete previous temp build file`)
+    logger.padLog('[clear] delete previous temp build file')
     execSync('npm run script-delete-temp-build-file', { cwd: fromRoot(), stdio: 'ignore', shell: true })
   }
 
-  logger.padLog(`generate exportInfoMap`)
-  const sourceRouteMap = await collectSourceRouteMap({ pathRootList: [ fromRoot('source') ], logger })
+  logger.padLog('generate exportInfoMap')
+  const sourceRouteMap = await collectSourceJsRouteMap({ pathRootList: [ fromRoot('source') ], logger })
   const exportInfoMap = generateExportInfo({ sourceRouteMap })
 
-  logger.log(`output: SPEC.md`)
+  logger.padLog('output: SPEC.md')
   const initRouteList = fromRoot('source').split(sep)
   writeFileSync(fromRoot('SPEC.md'), [
     '# Specification',

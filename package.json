@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "nundler",
-  "version": "0.2.1-dev.0",
+  "version": "0.2.1-dev.1",
   "description": "Not bundler",
   "author": "mockingbot",
   "license": "MIT",
@@ -23,8 +23,8 @@
     "build-bin-dev": "node -r @babel/register ./script/webpack-bin development watch",
     "// example =====================": "",
     "example-reset": "node -r @babel/register example/index.js clear init",
-    "example-auth-gen": "npx dr-node -c example/auth-gen.config.json",
-    "example-start-server": "npx dr-node -c example/server.config.json",
+    "example-auth-gen": "dr-node -c example/auth-gen.config.json",
+    "example-start-server": "dr-node -c example/server.config.json",
     "example-file-list": "node output-gitignore/bin -c example/test-file-list.config.json",
     "example-file-upload": "node output-gitignore/bin -c example/test-file-upload.config.json",
     "example-file-download": "node output-gitignore/bin -c example/test-file-download.config.json",
@@ -51,13 +51,13 @@
     "prepack": "echo \"Error: pack with script-*\" && exit 1"
   },
   "engines": {
-    "node": ">=12.13",
-    "npm": ">=6.12"
+    "node": ">=12.16",
+    "npm": ">=6.14"
   },
   "devDependencies": {
-    "@dr-js/core": "0.3.0-dev.1",
-    "@dr-js/dev": "0.3.0-dev.0",
-    "@dr-js/dev-web": "0.3.0-dev.0",
-    "@dr-js/node": "0.3.0-dev.0"
+    "@dr-js/core": "0.3.0-dev.12",
+    "@dr-js/dev": "0.3.0-dev.10",
+    "@dr-js/dev-web": "0.3.0-dev.10",
+    "@dr-js/node": "0.3.0-dev.8"
   }
 }

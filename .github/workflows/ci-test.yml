@@ -5,31 +5,38 @@ on: [ push ]
 jobs:
   build:
     strategy:
+      fail-fast: false # allow all test to run to the end
       matrix:
-        node-version: [ 12.x, 13.x ]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        node-version: [ 12.x, 14.x ]
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     steps:
+      - name: Reset Git config # fix win32 CI cause `something to commit` test error: https://github.com/actions/checkout/issues/135#issuecomment-602171132
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+
       - name: Setup Git repo
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2 # https://github.com/actions/checkout
 
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v1 # https://github.com/actions/setup-node
         with:
           node-version: ${{ matrix.node-version }}
 
       - name: Log CI info
         run: |
-          echo "system: $(uname -a)"
+          echo "system: $(node -p "os.platform() + ' - ' + os.release() + ' [' + os.arch() + ']'")"
           echo "node: $(node -v)"
           echo "npm: $(npm -v)"
 
-      - name: Install 7zip
-        run: sudo apt-get -y install p7zip-full
+      - name: Patch `7z` on darwin
+        run: node -e "process.exitCode = Number(os.platform() === 'darwin')" || brew install p7zip
+        # linux supported: https://github.com/actions/virtual-environments/blob/ubuntu18/20200415.3/images/linux/scripts/installers/7-zip.sh
+        # win32 supported: https://github.com/actions/virtual-environments/blob/win19/20200416.1/images/win/scripts/Installers/Install-7zip.ps1
 
       - run: npm ci
 
       - run: npm test
-        env:
-          CI: true
