@@ -10,10 +10,10 @@
 + 📄 [source/file.js](source/file.js)
   - `downloadFile`, `listFile`, `uploadFile`
 + 📄 [source/package.js](source/package.js)
-  - `downloadPackage`, `listPackage`, `loadPackageList`, `uploadPackage`
+  - `downloadPackage`, `listPackage`, `loadPackageList`, `trimLocalPackage`, `uploadPackage`
 
 #### Export Tree
-- `downloadDirectory`, `uploadDirectory`, `downloadFile`, `listFile`, `uploadFile`, `downloadPackage`, `listPackage`, `loadPackageList`, `uploadPackage`
+- `downloadDirectory`, `uploadDirectory`, `downloadFile`, `listFile`, `uploadFile`, `downloadPackage`, `listPackage`, `loadPackageList`, `trimLocalPackage`, `uploadPackage`
 
 #### Bin Option Format
 📄 [source-bin/option.js](source-bin/option.js)
@@ -82,6 +82,8 @@
 >           for [FILE] mode
 >       --download-directory [ARGUMENT=1]
 >           for [DIRECTORY] mode
+>   --package-trim-local --ptl [OPTIONAL] [ARGUMENT=1]
+>       for [PACKAGE] mode, delete unused local ".tgz" under specified path and exit. NOTE: use the most exact path, or more file than expected may lost
 >   --ping-host --ph [OPTIONAL] [ARGUMENT=0+]
 >       ping "url-host-list", print fastest host and exit
 >   --ping-host-stat --phs [OPTIONAL] [ARGUMENT=0+]
@@ -118,6 +120,7 @@
 >     export NUNDLER_DOWNLOAD_KEY="[ARGUMENT=1]"
 >     export NUNDLER_DOWNLOAD_FILE="[ARGUMENT=1]"
 >     export NUNDLER_DOWNLOAD_DIRECTORY="[ARGUMENT=1]"
+>     export NUNDLER_PACKAGE_TRIM_LOCAL="[OPTIONAL] [ARGUMENT=1]"
 >     export NUNDLER_PING_HOST="[OPTIONAL] [ARGUMENT=0+]"
 >     export NUNDLER_PING_HOST_STAT="[OPTIONAL] [ARGUMENT=0+]"
 >   "
@@ -152,6 +155,7 @@
 >     "downloadKey": [ "[ARGUMENT=1]" ],
 >     "downloadFile": [ "[ARGUMENT=1]" ],
 >     "downloadDirectory": [ "[ARGUMENT=1]" ],
+>     "packageTrimLocal": [ "[OPTIONAL] [ARGUMENT=1]" ],
 >     "pingHost": [ "[OPTIONAL] [ARGUMENT=0+]" ],
 >     "pingHostStat": [ "[OPTIONAL] [ARGUMENT=0+]" ],
 >   }

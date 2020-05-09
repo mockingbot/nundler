@@ -4,7 +4,7 @@ import { clock } from '@dr-js/core/module/common/time'
 import {
   listFile, uploadFile, downloadFile,
   uploadDirectory, downloadDirectory,
-  loadPackageList, listPackage, uploadPackage, downloadPackage
+  loadPackageList, listPackage, uploadPackage, downloadPackage, trimLocalPackage
 } from 'source'
 
 import { createMarkReplacer, generateMarkMap, configureAuthFile, pingRaceUrlList, pingStatUrlList } from './function'
@@ -19,6 +19,14 @@ const runMode = async (modeName, { tryGet, tryGetFirst, get, getFirst }) => {
   const log = tryGet('quiet')
     ? () => {}
     : (...args) => console.log(...args, `(${time(clock() - timeStart)})`)
+
+  const getPackageListList = () => {
+    const pathPackageJSONList = get('package-json')
+    const packageNameFilterList = get('package-name-filter')
+    const packagePathPrefix = tryGetFirst('package-path-prefix') || ''
+    return pathPackageJSONList.map((pathPackageJSON) => loadPackageList({ pathPackageJSON, packageNameFilterList, packagePathPrefix, log }))
+  }
+  if (modeName === 'package-trim-local') return trimLocalPackage({ trimLocalPath: getFirst('package-trim-local'), packageList: [].concat(...getPackageListList()), log }) // trim all at once to prevent all file get trimmed
 
   const isPackageMode = tryGet('package-json')
   const isDirectoryMode = tryGet('directory')
@@ -43,32 +51,25 @@ const runMode = async (modeName, { tryGet, tryGetFirst, get, getFirst }) => {
   ].filter(Boolean).join(', '))
 
   if (isPackageMode) {
-    const pathPackageJSONList = get('package-json')
-    const packageNameFilterList = get('package-name-filter')
-    const packagePathPrefix = tryGetFirst('package-path-prefix') || ''
-    const packageListList = pathPackageJSONList.map((pathPackageJSON) => loadPackageList({ pathPackageJSON, packageNameFilterList, packagePathPrefix, log }))
-    for (const packageList of packageListList) {
+    for (const packageList of getPackageListList()) {
       switch (modeName) {
         case 'list':
           await listPackage({
             urlPathAction: markReplacer(getFirst('url-path-action')),
-            packageList,
-            ...commonOption
+            packageList, ...commonOption
           })
           break
         case 'upload':
           await uploadPackage({
             urlFileUpload: markReplacer(getFirst('url-file-upload')),
             urlPathAction: markReplacer(getFirst('url-path-action')),
-            packageList,
-            ...commonOption
+            packageList, ...commonOption
           })
           break
         case 'download':
           await downloadPackage({
             urlFileDownload: markReplacer(getFirst('url-file-download')),
-            packageList,
-            ...commonOption
+            packageList, ...commonOption
           })
           break
       }

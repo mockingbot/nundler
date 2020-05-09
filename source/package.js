@@ -1,4 +1,4 @@
-import { join, resolve, normalize, dirname, basename } from 'path'
+import { join, resolve, relative, normalize, dirname, basename } from 'path'
 import { readFileSync } from 'fs'
 
 import { padTable } from '@dr-js/core/module/common/format'
@@ -6,7 +6,8 @@ import { indentLine } from '@dr-js/core/module/common/string'
 import { compareSemVer } from '@dr-js/core/module/common/module/SemVer'
 
 import { STAT_ERROR, getPathLstat, toPosixPath } from '@dr-js/core/module/node/file/Path'
-import { modifyRename } from '@dr-js/core/module/node/file/Modify'
+import { getFileList } from '@dr-js/core/module/node/file/Directory'
+import { modifyDelete, modifyRename } from '@dr-js/core/module/node/file/Modify'
 
 import { PATH_ACTION_TYPE } from '@dr-js/node/module/module/PathAction/base'
 import { pathAction, fileUpload, fileDownload } from '@dr-js/node/module/server/feature/Explorer/client'
@@ -177,9 +178,29 @@ const downloadPackage = async ({
   }
 }
 
+const trimLocalPackage = async ({
+  packageList,
+  trimLocalPath,
+  log
+}) => {
+  const keepPathSet = new Set(packageList.map(({ localPath }) => resolve(localPath)))
+  const fileList = await getFileList(trimLocalPath)
+  const tag = `[PackageTrimLocal|${keepPathSet.size}-${fileList.length}]`
+  let trimCount = 0
+  for (const file of fileList) {
+    const path = resolve(file) // resolve so path is comparable
+    if (keepPathSet.has(path)) continue
+    await modifyDelete(path)
+    trimCount++
+    log(tag, `trim: ${relative(trimLocalPath, file)}`)
+  }
+  log(tag, `done trim ${trimCount} of ${fileList.length}`)
+}
+
 export {
   loadPackageList,
   listPackage,
   uploadPackage,
-  downloadPackage
+  downloadPackage,
+  trimLocalPackage
 }

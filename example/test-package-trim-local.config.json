@@ -1,0 +1,5 @@
+{
+  "packageTrimLocal": "./sample-package-gitignore/.nundler-gitignore/",
+  "packageJson": "./sample-package-gitignore/package.json",
+  "packageNameFilter": "@nundler/local"
+}

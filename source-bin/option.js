@@ -40,6 +40,7 @@ const MODE_FORMAT_LIST = parseCompactList(
       'download-directory/SP,O|for [DIRECTORY] mode'
     ) ]
   ) ],
+  'package-trim-local,ptl/SP,O|for [PACKAGE] mode, delete unused local ".tgz" under specified path and exit. NOTE: use the most exact path, or more file than expected may lost',
   'ping-host,ph/T|ping "url-host-list", print fastest host and exit',
   'ping-host-stat,phs/T|ping "url-host-list", print stat and exit'
 )

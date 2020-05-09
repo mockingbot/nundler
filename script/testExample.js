@@ -1,5 +1,5 @@
 import { resolve } from 'path'
-import { existsSync, statSync, renameSync } from 'fs'
+import { existsSync, statSync, renameSync, writeFileSync } from 'fs'
 
 import { indentLine } from '@dr-js/core/module/common/string'
 import { strictEqual, stringifyEqual, notStrictEqual } from '@dr-js/core/module/common/verify'
@@ -16,6 +16,7 @@ const fromRoot = (...args) => resolve(PATH_ROOT, ...args)
 
 const getExampleFileStat = (examplePath) => statSync(fromRoot('example', examplePath))
 const renameExampleFile = (examplePath, examplePathRename) => renameSync(fromRoot('example', examplePath), fromRoot('example', examplePathRename))
+const createExampleFile = (examplePath, content = examplePath) => writeFileSync(fromRoot('example', examplePath), content)
 const verifyExampleFileExist = (title, examplePath) => strictEqual(
   existsSync(fromRoot('example', examplePath)),
   true,
@@ -34,17 +35,17 @@ runMain(async ({ padLog, stepLog }) => {
   await runWithOutputString('npm run example-reset')
   await runWithOutputString('npm run example-auth-gen')
 
+  const runTest = async (title, task) => {
+    padLog(`[test] ${title}`)
+    await task(title)
+  }
+
   padLog('start example server')
   await withRunBackground({
     command: 'npm run example-start-server',
     option: { cwd: fromRoot(), stdio: 'ignore', shell: true }
   }, async () => {
     stepLog('start example server done')
-
-    const runTest = async (title, task) => {
-      padLog(`[test] ${title}`)
-      await task(title)
-    }
 
     await runTest('file-list', async () => {
       const listOutputString = await runWithOutputString('npm run example-file-list')
@@ -250,4 +251,15 @@ runMain(async ({ padLog, stepLog }) => {
     padLog('stop example server')
   }, 1000) // wait 1sec for server to start up (mostly for GitHub Action win10 + nodejs@14)
   stepLog('stop example server done')
+
+  await runTest('package-trim-local', async () => {
+    createExampleFile('sample-package-gitignore/.nundler-gitignore/nundler-local-trim-me.tgz')
+    const outputString = await runWithOutputString('npm run example-package-trim-local')
+    strictEqual(outputString.includes('nundler-local-trim-me.tgz'), true)
+    const outputStringAgain = await runWithOutputString('npm run example-package-trim-local')
+    strictEqual(outputStringAgain.includes('nundler-local-trim-me.tgz'), false) // nothing
+    verifyExampleFileExist('package-trim-local', 'sample-package-gitignore/.nundler-gitignore/nundler-local-aaa-0.0.0.tgz')
+    verifyExampleFileExist('package-trim-local', 'sample-package-gitignore/.nundler-gitignore/nundler-local-bbb-1.1.1.tgz')
+    verifyExampleFileExist('package-trim-local', 'sample-package-gitignore/.nundler-gitignore/nundler-local-ccc-2.2.2.tgz')
+  })
 }, 'test-example')
